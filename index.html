@@ -95,8 +95,8 @@
             function render() {
                 var time = Date.now() * 0.001;
                 
-                light.position.x=Math.sin(time)
-                light.position.z=Math.cos(time)
+                light.position.x = Math.sin(time);
+                light.position.z = Math.cos(time);
 
                 // vr
 
@@ -109,7 +109,7 @@
                     return;
                 }
 
-                // everything else
+                // web and mobile
 
                 requestAnimationFrame(render);
                 controls.update();
