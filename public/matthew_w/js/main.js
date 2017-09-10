@@ -2,12 +2,16 @@ var camera, scene, renderer, effect, controls, vrControls, light;
 var controller1, controller2;
 var mobile = false;
 var vr = false;
-
-
+var audio = new AudioReactive({});
+var useLights = false;
 
 function init() {
 
     // renderer
+
+    audio.playMedia('assets/sound/ritual');      
+    
+
 
     renderer = new THREE.WebGLRenderer({antialias: true});
     renderer.setPixelRatio(window.devicePixelRatio);
@@ -21,41 +25,104 @@ function init() {
     // camera
 
     camera = new THREE.PerspectiveCamera(90, window.innerWidth / window.innerHeight, 0.1, 10000);
-    camera.position.set(0, 0, 3);
+    camera.position.set(0, 0, 20);
 
     // controls
 
     controls = new THREE.OrbitControls(camera);
     controls.autoRotate = true;
 
-    // events
+    // events       
 
     addEvents();
 
 }
 
+let lights = [];
+let NUM_LIGHTS = 3;
+
+let envMap = getCubeMap(0);
+
 function setup() {
 
     // lights
 
-    light = new THREE.DirectionalLight(0xff00FF);
-    light.position.set(.2, .1, .2);
-    scene.add(light);
+    if(useLights) {
+        for (var i = 0; i<NUM_LIGHTS; i++) {
+            var l = new THREE.DirectionalLight(0x333333);
+            l.position.set(Math.random(), Math.random(), Math.random());
+            lights.push(l);
+            scene.add(l);
+        }
+    }
+
+
+    var cubeShader = THREE.ShaderLib['cube'];
+    cubeShader.uniforms['tCube'].value = getCubeMap(10);
+    
+    var skyBoxMaterial = new THREE.ShaderMaterial({
+    fragmentShader: cubeShader.fragmentShader,
+    vertexShader: cubeShader.vertexShader,
+    uniforms: cubeShader.uniforms,
+    depthWrite: false,
+    side: THREE.BackSide
+    });
+    
+    var skyBox = new THREE.Mesh(new THREE.CubeGeometry(200, 200, 200),skyBoxMaterial);
+    
+    scene.add(skyBox);
 
     // objects
 
-    var material = new THREE.MeshPhongMaterial({shading: THREE.FlatShading});
-    var geo = new THREE.OctahedronGeometry(1, 2);
-    var mesh = new THREE.Mesh(geo, material);
-    scene.add(mesh);
+
+    // var material = new THREE.MeshBasicMaterial({shading: THREE.FlatShading, envMap: getCubeMap(10)});
+    // var geo = new THREE.TorusKnotBufferGeometry( 10, 3, 100, 16 );
+    // var mesh = new THREE.Mesh(geo, material);
+    // scene.add(mesh);
+
+    for(var i = 0; i<5; i++) {
+    generateBubble(4+Math.random()*7,new THREE.Vector3(polarNoise()*range,polarNoise()*range,polarNoise()*range));
+    }
+
+}
+
+let bubbles = [];
+
+let range = 100;
+
+function polarNoise() {
+    return 1 - Math.random();
+}
+
+function generateBubble (scale, position) {
+
+    let outergeometry = new THREE.SphereGeometry( scale, 32, 32 );
+    let innergeometry = new THREE.SphereGeometry( scale * 0.9, 32, 32 );
+
+    let outermaterial = new THREE.MeshBasicMaterial( {color: 0xffff00, envMap:getCubeMap(10)} );
+    let innermaterial = new THREE.MeshBasicMaterial( {color: 0xFFFFFF, envMap:getCubeMap(Math.floor(Math.random()*10)), side:THREE.BackSide} ); // 
+    
+    let innerBubble = new THREE.Mesh( innergeometry, innermaterial );
+    let outerBubble = new THREE.Mesh( outergeometry, outermaterial );
+
+    innerBubble.position.set(position.x, position.y, position.z);
+    outerBubble.position.set(position.x, position.y, position.z);
+
+        scene.add(outerBubble);
+        scene.add(innerBubble);
+
 }
 
 function render() {
     var time = Date.now() * 0.001;
 
-    light.position.x = Math.sin(time);
-    light.position.z = Math.cos(time);
-    light.color = new THREE.Color(Math.sin(time), Math.sin(time*2), Math.cos(time*6));
+    if(lights.length > 0) {
+    lights.forEach((light, i)=>{
+        light.position.x = Math.sin(time*i);
+        light.position.z = Math.cos(time*i);
+        });
+    }
+
     // vr
 
     if (vr) {
@@ -70,10 +137,14 @@ function render() {
     // web and mobile
 
     requestAnimationFrame(render);
+
+    audio.update();
+    console.log(audio)
+
     controls.update();
     if (mobile) {
         camera.position.set(0, 0, 0);
-        camera.translateZ(3);
+        camera.translateZ(40);
     }
     renderer.render(scene, camera);
 }
