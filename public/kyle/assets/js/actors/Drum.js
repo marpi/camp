@@ -66,8 +66,6 @@ export default class Drum extends Actor {
 
 	addEvents() {
 		this.event = {};
-		console.log('add events');
-		console.log(this.opts.controller1, this.opts.controller2);
 		if (WEBVR.isAvailable() === true) {
 			console.log('add trigger listeners');
 			this.opts.controller1.addEventListener('triggerdown', this.onTriggerDown.bind(this));
@@ -100,7 +98,7 @@ export default class Drum extends Actor {
 
 	onTriggerDown(evt) {
 		console.log('trigger', evt);
-		// this.interact();
+		this.interact3d(evt.target.position);
 	}
 	onTriggerUp() {
 		this.stopInteract();
@@ -154,6 +152,13 @@ export default class Drum extends Actor {
 			}
 			intersects.forEach(intersect => this.setMaterial(intersect.object, this.opts.color));
 		}
+	}
+
+	interact3d(pos) {
+		let dist = pos.distanceTo(this.shapes[0].position);
+		console.log(pos);
+		console.log(this.shapes[0].position);
+		console.log(dist);
 	}
 
 	stopInteract() {

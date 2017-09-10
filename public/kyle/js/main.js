@@ -472,8 +472,6 @@ var Drum = function (_Actor) {
 		key: 'addEvents',
 		value: function addEvents() {
 			this.event = {};
-			console.log('add events');
-			console.log(this.opts.controller1, this.opts.controller2);
 			if (WEBVR.isAvailable() === true) {
 				console.log('add trigger listeners');
 				this.opts.controller1.addEventListener('triggerdown', this.onTriggerDown.bind(this));
@@ -508,7 +506,7 @@ var Drum = function (_Actor) {
 		key: 'onTriggerDown',
 		value: function onTriggerDown(evt) {
 			console.log('trigger', evt);
-			// this.interact();
+			this.interact3d(evt.target.position);
 		}
 	}, {
 		key: 'onTriggerUp',
@@ -575,6 +573,14 @@ var Drum = function (_Actor) {
 					return _this2.setMaterial(intersect.object, _this2.opts.color);
 				});
 			}
+		}
+	}, {
+		key: 'interact3d',
+		value: function interact3d(pos) {
+			var dist = pos.distanceTo(this.shapes[0].position);
+			console.log(pos);
+			console.log(this.shapes[0].position);
+			console.log(dist);
 		}
 	}, {
 		key: 'stopInteract',
