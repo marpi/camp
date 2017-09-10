@@ -590,13 +590,12 @@ var Drum = function (_Actor) {
 			if (dist < 0.6) {
 				this.audio.playMedia(this.opts.sound || '');
 				this.setMaterial(this.shapes[0], this.opts.color);
-			} else {
-				var debug = this.debug(pos);
 			}
 		}
 	}, {
 		key: 'debug',
 		value: function debug(pos) {
+			return;
 			var geometry = new THREE.BoxGeometry(0.1, 0.1, 0.1);
 			var material = new THREE.MeshPhongMaterial({ shading: 0xFFFFFF });
 			var debug = new THREE.Mesh(geometry, material);
