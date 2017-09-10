@@ -68,7 +68,7 @@
                 // controls
 
                 controls = new THREE.OrbitControls(camera);
-                controls.autoRotate = true;
+                //controls.autoRotate = true;
 
                 // events
 
@@ -86,17 +86,21 @@
 
                 // objects
 
-                var material = new THREE.MeshPhongMaterial({shading: THREE.FlatShading});
-                var geo = new THREE.OctahedronGeometry(1, 2);
-                var mesh = new THREE.Mesh(geo, material);
-                scene.add(mesh);
+                var material = new THREE.MeshPhongMaterial({shading: THREE.FlatShading});//shading: THREE.FlatShading
+                var geo = new THREE.TorusKnotGeometry(2, .5);
+                for (var i = 0; i < 100; i++) {
+                    var mesh = new THREE.Mesh(geo, material);
+                    scene.add(mesh);
+                    mesh.position.x = -20 + Math.random() * 40;
+                    mesh.position.y = -20 + Math.random() * 40;
+                }
             }
 
             function render() {
                 var time = Date.now() * 0.001;
 
-                light.position.x = Math.sin(time);
-                light.position.z = Math.cos(time);
+                //light.position.x = Math.sin(time*10);
+                //light.position.z = Math.cos(10*time);
 
                 // vr
 
@@ -105,9 +109,9 @@
                     controller1.update();
                     controller2.update();
                     effect.requestAnimationFrame(render);
-                    camera.position.y-=1;
+                    //camera.position.y-=1;
                     effect.render(scene, camera);
-                    camera.position.y+=1;
+                    //camera.position.y+=1;
                     return;
                 }
 
