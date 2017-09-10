@@ -40,7 +40,7 @@
 
             var camera, scene, renderer, effect, controls, vrControls, light;
             var controller1, controller2;
-            var meshCount = 200;
+            var meshCount = 100;
             var meshes = [];
             var mobile = false;
             var vr = false;
@@ -102,10 +102,17 @@
 
                 // objects
                 // var material = new THREE.MeshBasicMaterial( { color: 0xffff00, side: THREE.DoubleSide } );
-                var material = new THREE.MeshPhongMaterial({shading:THREE.FlatShading});
+                // var material = new THREE.MeshPhongMaterial({shading:THREE.FlatShading});
+                var material = new THREE.MeshStandardMaterial({
+                  metalness: 1,
+                  roughness: 0.6,
+                  envMap: cubeMap,
+                  shading: THREE.FlatShading,
+                });
                 for(var i = 0; i < meshCount; i++) {
-                  var size = 0.2;
-                  var geometry = new THREE.BoxGeometry(size, size, size);
+                  var size = 0.1;
+                  // var geometry = new THREE.BoxGeometry(size, size, size);
+                  var geometry = new THREE.TetrahedronGeometry(size, 3);
                   var mesh = new THREE.Mesh(geometry, material);
 
                   // var angle = (i / meshCount * 360 * 8) * Math.PI / 180;
@@ -118,16 +125,6 @@
                   meshes.push(mesh);
                   scene.add(mesh);
                 }
-
-                // var material = new THREE.MeshStandardMaterial({
-                //   shading:THREE.FlatShading,
-                //   side: THREE.BackSide
-                // });
-
-                // var material = new THREE.MeshPhongMaterial({shading:THREE.FlatShading});
-                // var geo = new THREE.OctahedronGeometry(2,0);
-                // var mesh = new THREE.Mesh(geo, material);
-                // scene.add(mesh);
             }
 
             function render() {
@@ -136,18 +133,22 @@
                 // light.position.x = Math.sin(time);
                 // light.position.z = Math.cos(time);
 
+                var height = 5.0;
+                var winding = 16;
                 for(var i in meshes) {
                   var mesh = meshes[i];
                   // var angle = ((time + i) % 360) * Math.PI / 180;
-                  var angle = ((i / meshCount * 360 * 8) + time * 60.0) * Math.PI / 180;
-                  var radius = 2.0;
+                  var angle = ((i / meshCount * 360 * winding) + time * 60.0) * Math.PI / 180;
+                  var radius = (i / meshCount) * 2.0 + 0.2;
+                  // var radius = i * 0.05 + 0.2;
+                  // var radius = Math.sin(i / meshCount) * 2.0;
 
                   mesh.position.x = Math.sin(angle) * radius;
-                  mesh.position.y = i * 0.05 - 2.0;
+                  mesh.position.y = Math.sin(angle) + (-i * height / meshCount + 2.0);
                   mesh.position.z = Math.cos(angle) * radius + 2.0;
 
-                  mesh.rotation.x = time * 0.2;
-                  mesh.rotation.y = time * 0.4;
+                  // mesh.rotation.x = time * 0.2;
+                  // mesh.rotation.y = time * 0.4;
                   mesh.rotation.z = time * 0.6;
                 }
 
