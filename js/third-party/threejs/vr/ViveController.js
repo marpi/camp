@@ -97,6 +97,7 @@ THREE.ViveController = function ( id ) {
 
 				triggerIsPressed = gamepad.buttons[ 1 ].pressed;
 				scope.dispatchEvent( { type: triggerIsPressed ? 'triggerdown' : 'triggerup' } );
+                                console.log(triggerIsPressed)
 
 			}
 
