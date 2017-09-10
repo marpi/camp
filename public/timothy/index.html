@@ -40,7 +40,7 @@
 
             var camera, scene, renderer, effect, controls, vrControls, light;
             var controller1, controller2;
-            var meshCount = 100;
+            var meshCount = 150;
             var meshes = [];
             var mobile = false;
             var vr = false;
@@ -86,7 +86,7 @@
                 light.position.set(.1,.3,.2);
                 scene.add(light);
 
-                var cubeMap = getCubeMap(3);
+                var cubeMap = getCubeMap(8);
                 var cubeShader = THREE.ShaderLib['cube'];
                 cubeShader.uniforms['tCube'].value = cubeMap;
                 var skyBoxMaterial = new THREE.ShaderMaterial({
@@ -105,14 +105,14 @@
                 // var material = new THREE.MeshPhongMaterial({shading:THREE.FlatShading});
                 var material = new THREE.MeshStandardMaterial({
                   metalness: 1,
-                  roughness: 0.6,
+                  roughness: 0.2,
                   envMap: cubeMap,
-                  shading: THREE.FlatShading,
+                  // shading: THREE.FlatShading,
                 });
                 for(var i = 0; i < meshCount; i++) {
                   var size = 0.1;
                   // var geometry = new THREE.BoxGeometry(size, size, size);
-                  var geometry = new THREE.TetrahedronGeometry(size, 3);
+                  var geometry = new THREE.TetrahedronGeometry(size, 4);
                   var mesh = new THREE.Mesh(geometry, material);
 
                   // var angle = (i / meshCount * 360 * 8) * Math.PI / 180;
@@ -125,6 +125,8 @@
                   meshes.push(mesh);
                   scene.add(mesh);
                 }
+
+
             }
 
             function render() {
@@ -133,23 +135,25 @@
                 // light.position.x = Math.sin(time);
                 // light.position.z = Math.cos(time);
 
-                var height = 5.0;
-                var winding = 16;
+                var height = 30.0;
+                var winding = 2;
                 for(var i in meshes) {
                   var mesh = meshes[i];
+                  var ratio = i / meshCount;
                   // var angle = ((time + i) % 360) * Math.PI / 180;
-                  var angle = ((i / meshCount * 360 * winding) + time * 60.0) * Math.PI / 180;
-                  var radius = (i / meshCount) * 2.0 + 0.2;
+                  var angle = ((ratio * 360 * winding) + time * 60.0) * Math.PI / 180;
+                  var radius = ratio * 2.0 + 0.2;
                   // var radius = i * 0.05 + 0.2;
                   // var radius = Math.sin(i / meshCount) * 2.0;
 
                   mesh.position.x = Math.sin(angle) * radius;
-                  mesh.position.y = Math.sin(angle) + (-i * height / meshCount + 2.0);
-                  mesh.position.z = Math.cos(angle) * radius + 2.0;
+                  // mesh.position.y = (Math.cos(ratio * time) * 0.2) + (-i * height / meshCount + 2.0);
+                  mesh.position.y = Math.cos(angle) * radius + 2.0;
+                  mesh.position.z = (-i * height / meshCount) + 2.0;
 
                   // mesh.rotation.x = time * 0.2;
                   // mesh.rotation.y = time * 0.4;
-                  mesh.rotation.z = time * 0.6;
+                  // mesh.rotation.z = time * 0.6;
                 }
 
                 // vr
