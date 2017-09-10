@@ -476,6 +476,9 @@ var Drum = function (_Actor) {
 				console.log('add trigger listeners');
 				this.opts.controller1.addEventListener('triggerdown', this.onTriggerDown.bind(this));
 				this.opts.controller2.addEventListener('triggerdown', this.onTriggerDown.bind(this));
+
+				this.opts.controller1.addEventListener('triggerup', this.onTriggerUp.bind(this));
+				this.opts.controller2.addEventListener('triggerup', this.onTriggerUp.bind(this));
 			}
 			document.addEventListener('keydown', this.onKeyDown.bind(this));
 			document.addEventListener('mousedown', this.onMouseDown.bind(this));
@@ -578,16 +581,15 @@ var Drum = function (_Actor) {
 		key: 'interact3d',
 		value: function interact3d(pos) {
 			var dist = pos.distanceTo(this.shapes[0].position);
-			console.log(pos);
-			console.log(this.shapes[0].position);
-			console.log(dist);
+			if (dist < 0.6) {
+				this.audio.playMedia(this.opts.sound || '');
+				this.setMaterial(this.shapes[0], this.opts.color);
+			}
 		}
 	}, {
 		key: 'stopInteract',
 		value: function stopInteract() {
 			this.setMaterial(this.shapes[0], 0xffffff);
-			document.removeEventListener('touchend', this.release);
-			document.removeEventListener('mouseup', this.release);
 		}
 	}, {
 		key: 'setMaterial',
