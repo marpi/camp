@@ -59,7 +59,7 @@ function addEvents() {
 
     function controller1Down() {
     
-        var bubbles = generateBubble(0.3);
+        var bubbles = generateBubble(0.25);
 
         bubbles.forEach(mesh=>{
             mesh.matrixAutoUpdate = false;
@@ -72,16 +72,15 @@ function addEvents() {
     }
     
     function controller2Down() {
-        // console.log(controller2.position)
-    
-        // var geo = new THREE.TetrahedronGeometry(.1, Math.floor(Math.random() * 3));
-        // var mesh = new THREE.Mesh(geo, material);
-        // //mesh.position.copy(controller2.position)
-        // mesh.matrixAutoUpdate = false;
-        // mesh.matrix.copy(controller2.matrix);
-        // mesh.matrixWorldNeedsUpdate = true;
-        // //mesh.scale.set(15, 15 / 10, 15)
-        // scene.add(mesh);
+        var bubbles = generateBubble(0.25);
+        
+                bubbles.forEach(mesh=>{
+                    mesh.matrixAutoUpdate = false;
+                    mesh.matrix.copy(controller1.matrix);
+                    mesh.matrixWorldNeedsUpdate = true;
+                    //mesh.scale.set(15, 15 / 10, 15)
+                    scene.add(mesh);
+                 });
     }
 
 function init() {
