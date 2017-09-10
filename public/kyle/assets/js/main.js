@@ -43,7 +43,7 @@ function setup() {
     light.position.set(0,1,5);
     scene.add(light);
 
-    var cubeMap = getCubeMap(4);
+    var cubeMap = getCubeMap(5);
     var skybox = new Skybox({scene,renderer, camera}, {cubeMap});
     
     // objects
@@ -51,34 +51,44 @@ function setup() {
         position: new Position(-1, 0, 0.5),
         sound: 'assets/sound/snare',
         color: 0xffff00,
-        keyCode: 70
+        keyCode: 70,
+        controller1,
+        controller2
     });
 
     var highhat = new Drum({scene, renderer, camera}, {
         position: new Position(1, 0, 0.5),
         sound: 'assets/sound/highhat',
         color: 0xff0000,
-        keyCode: 74
+        keyCode: 74,
+        controller1,
+        controller2
     });
     var bass = new Drum({scene, renderer, camera}, {
         position: new Position(0, 0, 0),
         sound: 'assets/sound/bass',
         color: 0x00ffff,
-        keyCode: 32
+        keyCode: 32,
+        controller1,
+        controller2
     });
 
     var china = new Drum({scene, renderer, camera}, {
         position: new Position(1.75, 0, 1.25),
         sound: 'assets/sound/china',
         color: 0x00ff00,
-        keyCode: 85
+        keyCode: 85,
+        controller1,
+        controller2
     });
 
     var crash = new Drum({scene, renderer, camera}, {
         position: new Position(-1.75, 0, 1.25), //
         sound: 'assets/sound/crash',
         color: 0x0000ff,
-        keyCode: 82
+        keyCode: 82,
+        controller1,
+        controller2
     });
 }
 

@@ -7,6 +7,8 @@ export default class Drum extends Actor {
 		this.raycaster = new THREE.Raycaster();
 		this.sound();
 		this.addEvents();
+
+
 	}
 
 	shape() {
@@ -64,7 +66,13 @@ export default class Drum extends Actor {
 
 	addEvents() {
 		this.event = {};
-		document.addEventListener('triggerdown', this.onTriggerDown.bind(this));
+		if (WEBVR.isAvailable() === true) {
+			this.opts.controller1.addEventListener('triggerdown', this.onTriggerDown.bind(this));
+			this.opts.controller2.addEventListener('triggerdown', this.onTriggerDown.bind(this));
+
+			this.opts.controller1.addEventListener('triggerup', this.onTriggerUp.bind(this));
+			this.opts.controller2.addEventListener('triggerup', this.onTriggerUp.bind(this));
+		}
 		document.addEventListener('keydown', this.onKeyDown.bind(this));
 		document.addEventListener('mousedown', this.onMouseDown.bind(this));
 		document.addEventListener('touchstart', this.onTouchStart.bind(this));
@@ -91,8 +99,9 @@ export default class Drum extends Actor {
 	}
 
 	onTriggerDown(evt) {
-		console.log('trigger', evt);
-		// this.interact();
+		console.log('trigger', evt.target.position);
+		console.log('dist', this.shapes[0].position.distanceTo(evt.target.position));
+		this.interact3d(evt.target.position);
 	}
 	onTriggerUp() {
 		this.stopInteract();
@@ -104,7 +113,6 @@ export default class Drum extends Actor {
 	}
 
 	onMouseDown(evt) {
-		console.log(evt);
 		evt.preventDefault();
 		this.event.x = ( event.clientX / this.renderer.domElement.clientWidth ) * 2 - 1;
 		this.event.y = -( event.clientY / this.renderer.domElement.clientHeight ) * 2 + 1;
@@ -149,15 +157,39 @@ export default class Drum extends Actor {
 		}
 	}
 
+	interact3d(pos) {
+		let dist = pos.distanceTo(this.shapes[0].position);
+		console.log('dist', dist);
+		if (dist < 0.6) {
+			this.audio.playMedia(this.opts.sound || '');
+			this.setMaterial(this.shapes[0], this.opts.color);
+		}
+		else {
+			let debug = this.debug(pos);
+			this.shapes.push()
+		}
+	}
+
+	debug(pos) {
+		var geometry = new THREE.BoxGeometry( 0.1, 0.1, 0.1);
+		var material = new THREE.MeshPhongMaterial({ shading: 0xFFFFFF });
+		var debug = new THREE.Mesh( geometry, material );
+
+		debug.position.set(
+			pos.x,
+			pos.y,
+			pos.z
+		);
+
+	    this.shapes.push(cylinder);
+	}
+
 	stopInteract() {
 		this.setMaterial(this.shapes[0], 0xffffff);
-		document.removeEventListener('touchend', this.release);
-		document.removeEventListener('mouseup', this.release);
 	}
 
 	setMaterial(shape, hex) {
 		shape.material.color.setHex( hex );
 	}
-
 
 }

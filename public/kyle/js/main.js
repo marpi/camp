@@ -169,7 +169,7 @@ function setup() {
     light.position.set(0, 1, 5);
     scene.add(light);
 
-    var cubeMap = getCubeMap(4);
+    var cubeMap = getCubeMap(5);
     var skybox = new __WEBPACK_IMPORTED_MODULE_2__actors_Skybox__["a" /* default */]({ scene: scene, renderer: renderer, camera: camera }, { cubeMap: cubeMap });
 
     // objects
@@ -177,34 +177,44 @@ function setup() {
         position: new __WEBPACK_IMPORTED_MODULE_0__utils__["a" /* Position */](-1, 0, 0.5),
         sound: 'assets/sound/snare',
         color: 0xffff00,
-        keyCode: 70
+        keyCode: 70,
+        controller1: controller1,
+        controller2: controller2
     });
 
     var highhat = new __WEBPACK_IMPORTED_MODULE_1__actors_Drum__["a" /* default */]({ scene: scene, renderer: renderer, camera: camera }, {
         position: new __WEBPACK_IMPORTED_MODULE_0__utils__["a" /* Position */](1, 0, 0.5),
         sound: 'assets/sound/highhat',
         color: 0xff0000,
-        keyCode: 74
+        keyCode: 74,
+        controller1: controller1,
+        controller2: controller2
     });
     var bass = new __WEBPACK_IMPORTED_MODULE_1__actors_Drum__["a" /* default */]({ scene: scene, renderer: renderer, camera: camera }, {
         position: new __WEBPACK_IMPORTED_MODULE_0__utils__["a" /* Position */](0, 0, 0),
         sound: 'assets/sound/bass',
         color: 0x00ffff,
-        keyCode: 32
+        keyCode: 32,
+        controller1: controller1,
+        controller2: controller2
     });
 
     var china = new __WEBPACK_IMPORTED_MODULE_1__actors_Drum__["a" /* default */]({ scene: scene, renderer: renderer, camera: camera }, {
         position: new __WEBPACK_IMPORTED_MODULE_0__utils__["a" /* Position */](1.75, 0, 1.25),
         sound: 'assets/sound/china',
         color: 0x00ff00,
-        keyCode: 85
+        keyCode: 85,
+        controller1: controller1,
+        controller2: controller2
     });
 
     var crash = new __WEBPACK_IMPORTED_MODULE_1__actors_Drum__["a" /* default */]({ scene: scene, renderer: renderer, camera: camera }, {
         position: new __WEBPACK_IMPORTED_MODULE_0__utils__["a" /* Position */](-1.75, 0, 1.25), //
         sound: 'assets/sound/crash',
         color: 0x0000ff,
-        keyCode: 82
+        keyCode: 82,
+        controller1: controller1,
+        controller2: controller2
     });
 }
 
@@ -404,6 +414,7 @@ var Drum = function (_Actor) {
 		_this.raycaster = new THREE.Raycaster();
 		_this.sound();
 		_this.addEvents();
+
 		return _this;
 	}
 
@@ -461,7 +472,13 @@ var Drum = function (_Actor) {
 		key: 'addEvents',
 		value: function addEvents() {
 			this.event = {};
-			document.addEventListener('triggerdown', this.onTriggerDown.bind(this));
+			if (WEBVR.isAvailable() === true) {
+				this.opts.controller1.addEventListener('triggerdown', this.onTriggerDown.bind(this));
+				this.opts.controller2.addEventListener('triggerdown', this.onTriggerDown.bind(this));
+
+				this.opts.controller1.addEventListener('triggerup', this.onTriggerUp.bind(this));
+				this.opts.controller2.addEventListener('triggerup', this.onTriggerUp.bind(this));
+			}
 			document.addEventListener('keydown', this.onKeyDown.bind(this));
 			document.addEventListener('mousedown', this.onMouseDown.bind(this));
 			document.addEventListener('touchstart', this.onTouchStart.bind(this));
@@ -490,8 +507,9 @@ var Drum = function (_Actor) {
 	}, {
 		key: 'onTriggerDown',
 		value: function onTriggerDown(evt) {
-			console.log('trigger', evt);
-			// this.interact();
+			console.log('trigger', evt.target.position);
+			console.log('dist', this.shapes[0].position.distanceTo(evt.target.position));
+			this.interact3d(evt.target.position);
 		}
 	}, {
 		key: 'onTriggerUp',
@@ -507,7 +525,6 @@ var Drum = function (_Actor) {
 	}, {
 		key: 'onMouseDown',
 		value: function onMouseDown(evt) {
-			console.log(evt);
 			evt.preventDefault();
 			this.event.x = event.clientX / this.renderer.domElement.clientWidth * 2 - 1;
 			this.event.y = -(event.clientY / this.renderer.domElement.clientHeight) * 2 + 1;
@@ -561,11 +578,33 @@ var Drum = function (_Actor) {
 			}
 		}
 	}, {
+		key: 'interact3d',
+		value: function interact3d(pos) {
+			var dist = pos.distanceTo(this.shapes[0].position);
+			console.log('dist', dist);
+			if (dist < 0.6) {
+				this.audio.playMedia(this.opts.sound || '');
+				this.setMaterial(this.shapes[0], this.opts.color);
+			} else {
+				var debug = this.debug(pos);
+				this.shapes.push();
+			}
+		}
+	}, {
+		key: 'debug',
+		value: function debug(pos) {
+			var geometry = new THREE.BoxGeometry(0.1, 0.1, 0.1);
+			var material = new THREE.MeshPhongMaterial({ shading: 0xFFFFFF });
+			var debug = new THREE.Mesh(geometry, material);
+
+			debug.position.set(pos.x, pos.y, pos.z);
+
+			this.shapes.push(cylinder);
+		}
+	}, {
 		key: 'stopInteract',
 		value: function stopInteract() {
 			this.setMaterial(this.shapes[0], 0xffffff);
-			document.removeEventListener('touchend', this.release);
-			document.removeEventListener('mouseup', this.release);
 		}
 	}, {
 		key: 'setMaterial',
