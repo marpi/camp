@@ -76,7 +76,7 @@ THREE.ViveController = function ( id ) {
 			scope.matrixWorldNeedsUpdate = true;
 			scope.visible = true;
                         
-                                console.log(gamepad.buttons[ 1 ])
+                                //console.log(gamepad.buttons[ 1 ])
 
 			//  Thumbpad and Buttons.
 
