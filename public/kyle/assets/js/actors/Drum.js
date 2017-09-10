@@ -165,7 +165,7 @@ export default class Drum extends Actor {
 	interact3d(pos) {
 		let dist = pos.distanceTo(this.shapes[0].position);
 		console.log('dist', dist);
-		if (dist < 0.6) {
+		if (dist < 1) {
 			this.audio.playMedia(this.opts.sound || '');
 			this.setMaterial(this.shapes[0], this.opts.color);
 		}
