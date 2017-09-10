@@ -43,7 +43,7 @@ function controller1Down() {
     var mesh = new THREE.Mesh(geo, material);
     //mesh.position.copy(controller2.position)
     mesh.matrixAutoUpdate = false;
-    mesh.matrix.copy(controller2.matrix);
+    mesh.matrix.copy(controller1.matrix);
     mesh.matrixWorldNeedsUpdate = true;
     //mesh.scale.set(15, 15 / 10, 15)
     scene.add(mesh);
@@ -56,7 +56,7 @@ function controller2Down() {
     var mesh = new THREE.Mesh(geo, material);
     //mesh.position.copy(controller2.position)
     mesh.matrixAutoUpdate = false;
-    mesh.matrix.copy(controller1.matrix);
+    mesh.matrix.copy(controller2.matrix);
     mesh.matrixWorldNeedsUpdate = true;
     //mesh.scale.set(15, 15 / 10, 15)
     scene.add(mesh);
