@@ -7,6 +7,8 @@ export default class Drum extends Actor {
 		this.raycaster = new THREE.Raycaster();
 		this.sound();
 		this.addEvents();
+
+
 	}
 
 	shape() {
@@ -64,7 +66,13 @@ export default class Drum extends Actor {
 
 	addEvents() {
 		this.event = {};
-		document.addEventListener('triggerdown', this.onTriggerDown.bind(this));
+		console.log('add events');
+		console.log(this.opts.controller1, this.opts.controller2);
+		if (WEBVR.isAvailable() === true) {
+			console.log('add trigger listeners');
+			this.opts.controller1.addEventListener('triggerdown', this.onTriggerDown.bind(this));
+			this.opts.controller2.addEventListener('triggerdown', this.onTriggerDown.bind(this));
+		}
 		document.addEventListener('keydown', this.onKeyDown.bind(this));
 		document.addEventListener('mousedown', this.onMouseDown.bind(this));
 		document.addEventListener('touchstart', this.onTouchStart.bind(this));

@@ -177,34 +177,44 @@ function setup() {
         position: new __WEBPACK_IMPORTED_MODULE_0__utils__["a" /* Position */](-1, 0, 0.5),
         sound: 'assets/sound/snare',
         color: 0xffff00,
-        keyCode: 70
+        keyCode: 70,
+        controller1: controller1,
+        controller2: controller2
     });
 
     var highhat = new __WEBPACK_IMPORTED_MODULE_1__actors_Drum__["a" /* default */]({ scene: scene, renderer: renderer, camera: camera }, {
         position: new __WEBPACK_IMPORTED_MODULE_0__utils__["a" /* Position */](1, 0, 0.5),
         sound: 'assets/sound/highhat',
         color: 0xff0000,
-        keyCode: 74
+        keyCode: 74,
+        controller1: controller1,
+        controller2: controller2
     });
     var bass = new __WEBPACK_IMPORTED_MODULE_1__actors_Drum__["a" /* default */]({ scene: scene, renderer: renderer, camera: camera }, {
         position: new __WEBPACK_IMPORTED_MODULE_0__utils__["a" /* Position */](0, 0, 0),
         sound: 'assets/sound/bass',
         color: 0x00ffff,
-        keyCode: 32
+        keyCode: 32,
+        controller1: controller1,
+        controller2: controller2
     });
 
     var china = new __WEBPACK_IMPORTED_MODULE_1__actors_Drum__["a" /* default */]({ scene: scene, renderer: renderer, camera: camera }, {
         position: new __WEBPACK_IMPORTED_MODULE_0__utils__["a" /* Position */](1.75, 0, 1.25),
         sound: 'assets/sound/china',
         color: 0x00ff00,
-        keyCode: 85
+        keyCode: 85,
+        controller1: controller1,
+        controller2: controller2
     });
 
     var crash = new __WEBPACK_IMPORTED_MODULE_1__actors_Drum__["a" /* default */]({ scene: scene, renderer: renderer, camera: camera }, {
         position: new __WEBPACK_IMPORTED_MODULE_0__utils__["a" /* Position */](-1.75, 0, 1.25), //
         sound: 'assets/sound/crash',
         color: 0x0000ff,
-        keyCode: 82
+        keyCode: 82,
+        controller1: controller1,
+        controller2: controller2
     });
 }
 
@@ -404,6 +414,7 @@ var Drum = function (_Actor) {
 		_this.raycaster = new THREE.Raycaster();
 		_this.sound();
 		_this.addEvents();
+
 		return _this;
 	}
 
@@ -461,7 +472,13 @@ var Drum = function (_Actor) {
 		key: 'addEvents',
 		value: function addEvents() {
 			this.event = {};
-			document.addEventListener('triggerdown', this.onTriggerDown.bind(this));
+			console.log('add events');
+			console.log(this.opts.controller1, this.opts.controller2);
+			if (WEBVR.isAvailable() === true) {
+				console.log('add trigger listeners');
+				this.opts.controller1.addEventListener('triggerdown', this.onTriggerDown.bind(this));
+				this.opts.controller2.addEventListener('triggerdown', this.onTriggerDown.bind(this));
+			}
 			document.addEventListener('keydown', this.onKeyDown.bind(this));
 			document.addEventListener('mousedown', this.onMouseDown.bind(this));
 			document.addEventListener('touchstart', this.onTouchStart.bind(this));
