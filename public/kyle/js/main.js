@@ -510,7 +510,11 @@ var Drum = function (_Actor) {
 		value: function onTriggerDown(evt) {
 			console.log('trigger', evt.target.position);
 			console.log('dist', this.shapes[0].position.distanceTo(evt.target.position));
-			this.interact3d(evt.target.position);
+
+			var vec = new THREE.Vector3();
+			vec.setFromMatrixPosition(evt.target.matrix);
+
+			this.interact3d(vec);
 		}
 	}, {
 		key: 'onTriggerUp',

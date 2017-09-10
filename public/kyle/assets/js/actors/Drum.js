@@ -103,8 +103,8 @@ export default class Drum extends Actor {
 		console.log('trigger', evt.target.position);
 		console.log('dist', this.shapes[0].position.distanceTo(evt.target.position));
                 
-                var vec = new THREE.Vector3();
-                vec.setFromMatrixPosition( evt.target.matrix );
+        var vec = new THREE.Vector3();
+        vec.setFromMatrixPosition( evt.target.matrix );
                 
 		this.interact3d(vec);
 	}
