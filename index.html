@@ -191,6 +191,8 @@
                 }
 
                 TweenLite.delayedCall(2, animate)
+
+                //console.log("ROTATE")
             }
 
 
@@ -228,9 +230,9 @@
                     controller1.update();
                     controller2.update();
                     effect.requestAnimationFrame(render);
-                    container.position.y = 1;
+                    camera.position.y = -1;
                     effect.render(scene, camera);
-                    //camera.position.y+=1;
+                    camera.position.y += 1;
                     return;
                 }
 
