@@ -4,7 +4,7 @@ var mobile = false;
 var vr = false;
 var audio = new AudioReactive({});
 var useLights = false;
-var cubeMap = 10;
+var cubeMap = 9;
 var container = new THREE.Group();
 
 function addEvents() {
