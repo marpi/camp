@@ -41,7 +41,7 @@
             var camera, scene, renderer, effect, controls, vrControls, light;
             var controller1, controller2;
             var meshCount = 40;
-            var helixCount = 6;
+            var helixCount = 3;
             var helixes = [];
             var mobile = false;
             var vr = false;
@@ -112,14 +112,6 @@
                   shading: THREE.FlatShading,
                 });
 
-              var _material = new THREE.MeshNormalMaterial({
-                shading: THREE.FlatShading,
-              });
-
-              var _material = new THREE.MeshToonMaterial({
-                gradientMap: cubeMap,
-              });
-
                 var size = 0.1;
                 var geometry = new THREE.TetrahedronGeometry(size, 4);
 
@@ -134,6 +126,17 @@
                     scene.add(mesh);
                   }
                 }
+
+              var baseGeometry = new THREE.SphereGeometry(5, 32, 32);
+              var baseMaterial = new THREE.MeshStandardMaterial({
+                metalness: 0.0,
+                roughness: 0.4,
+                shading: THREE.FlatShading,
+              });
+
+              var base = new THREE.Mesh(baseGeometry, baseMaterial);
+              // base.position.set(0,0,0);
+              scene.add(base);
             }
 
             function render() {
@@ -155,9 +158,7 @@
                   var mesh = helix[i];
                   var ratio = i / meshCount;
                   var angle = ((ratio * 360 * winding + offset) + time * 120.0) * Math.PI / 180;
-                  if(i %2 == 0) { angle *= -1; }
-                  // var radius = ratio * 2.0 + 0.2;
-                  // var radius = 0.6;
+                  // if(i %2 == 0) { angle *= -1; }
 
                   mesh.position.x = Math.sin(angle) * radius;
                   // mesh.position.y = (Math.cos(ratio * time) * 0.2) + (-i * height / meshCount + 2.0);
