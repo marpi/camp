@@ -44,6 +44,7 @@
             var vr = false;
             var max = 40;
             var material;
+            var container
 
             var objects = [];
 
@@ -132,7 +133,7 @@
                     shading: THREE.FlatShading
                 });//shading: THREE.FlatShading
 
-                var container = new THREE.Group();
+                container = new THREE.Group();
                 for (var i = 0; i < 199; i++) {
                     var geo = new THREE.TetrahedronGeometry(.1, Math.floor(Math.random() * 3));
                     var mesh = new THREE.Mesh(geo, material);
