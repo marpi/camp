@@ -49,8 +49,10 @@
 
             var objects = [];
             var slides = []
+            var groundSlides = []
             var monkeyHead;
             var monkeyHeadTween;
+            var previousCameraPosition = new THREE.Vector3();
 
             init();
             setup();
@@ -146,7 +148,7 @@
                 for (var i = 0; i < 99; i++) {
                     var geo = new THREE.TetrahedronGeometry(.1, Math.floor(Math.random() * 3));
                     var mesh = new THREE.Mesh(geo, material);
-                    while (mesh.position.distanceTo(scene.position) > 2 || mesh.position.distanceTo(scene.position) < 1.5 || mesh.position.x == 0 || mesh.position.y < -1) {
+                    while (mesh.position.distanceTo(scene.position) > 3 || mesh.position.distanceTo(scene.position) < 2 || mesh.position.x == 0 || mesh.position.y < -1) {
                         mesh.position.x = -3 + Math.random() * 6;
                         mesh.position.y = -3 + Math.random() * 6;
                         mesh.position.z = -3 + Math.random() * 6;
@@ -157,11 +159,11 @@
                     container.add(mesh);
                 }
 
-                var geo = new THREE.TetrahedronGeometry(.1, 2);
-                var mesh = new THREE.Mesh(geo, material);
-                mesh.position.y = -1.5;
-                mesh.scale.set(15, 15 / 10, 15)
-                container.add(mesh);
+                /*var geo = new THREE.TetrahedronGeometry(.1, 2);
+                 var mesh = new THREE.Mesh(geo, material);
+                 mesh.position.y = -1.5;
+                 mesh.scale.set(15, 15 / 10, 15)
+                 container.add(mesh);*/
 
                 var geom = new THREE.Geometry();
                 for (var i = 0; i < container.children.length; i++) {
@@ -209,6 +211,8 @@
                 container.receiveShadow = true;
                 globalContainer.add(container)
 
+                // pyramid
+
                 for (var i = 0; i < 10; i++) {
                     //var geo = new THREE.BoxGeometry(1, .1, 1);
                     var geo = new THREE.CylinderGeometry(.1 * i, .1 * (1 + i), .2, 6);
@@ -220,6 +224,18 @@
                     slides.push(mesh);
                 }
 
+                // ground
+
+                for (var i = 0; i < 20; i++) {
+                    var geo = new THREE.TorusGeometry(1.2 + i * .3, .1, 10, 6)
+                    var mesh = new THREE.Mesh(geo, material);
+                    mesh.position.y = -1//-i*.1;
+                    mesh.rotation.set(Math.PI / 2, 0, Math.PI / 6);
+                    groundSlides.push(mesh);
+
+                    globalContainer.add(mesh);
+                }
+
                 var loader = new THREE.OBJLoader();
                 loader.setPath('assets/models/');
                 loader.load('monkey.obj', function (object) {
@@ -228,29 +244,54 @@
                     monkeyHeadTween = new THREE.Object3D();
                     object.children[0].material = material;
                     object.position.y = 1;
+
+                    animate()
                 });
 
-                animate()
             }
 
-            function animate() {
+            function animate(autoNext) {
+                var rotation = monkeyHead.rotation.y
+                while (rotation == monkeyHead.rotation.y) {
+                    var num = Math.round(Math.random() *6);
+                    rotation = num / 6 * Math.PI*2
+                    console.log(num,monkeyHead.rotation.y)
+                }
+
+                if (monkeyHead)
+                    TweenLite.to(monkeyHead.rotation, .5, {x: 0, y: rotation, z: 0})
 
                 for (var i = 0; i < slides.length; i++) {
                     var mesh = slides[i]
-                    TweenLite.to(mesh.rotation, 1, {
-                        delay: 1 - .1 * i,
-                        y: mesh.rotation.y + Math.PI * 2 / 6,
+                    TweenLite.to(mesh.rotation, .5, {
+                        delay: .05 * i,
+                        y: rotation,
+                        ease: Back.easeOut
+                    });
+                }
+                for (var i = 0; i < groundSlides.length; i++) {
+                    var mesh = groundSlides[i]
+                    TweenLite.to(mesh.position, .3, {
+                        delay: .5 + .1 * i,
+                        y: .5 * (1 - i / groundSlides.length) - 1,
+                        ease: Back.easeOut
+                    });
+                    TweenLite.to(mesh.position, 1, {
+                        delay: .5 + .3 + .1 * i,
+                        y: 0 - 1,
                         ease: Back.easeOut
                     });
                 }
 
-                TweenLite.delayedCall(2, animate)
+                TweenLite.delayedCall(3, animate)
 
                 //console.log("ROTATE")
             }
 
 
             function render() {
+                console.log();
+
                 var time = Date.now() * 0.0001;
 
 
@@ -279,8 +320,10 @@
 
                 // vr
                 if (monkeyHeadTween) {
-                    monkeyHeadTween.lookAt(camera.position)
-                    TweenLite.to(monkeyHead.rotation, 2, {x: monkeyHeadTween.rotation.x, y: monkeyHeadTween.rotation.y, z: monkeyHeadTween.rotation.z})
+                    if (previousCameraPosition.distanceTo(camera.position) > .1) {
+                        monkeyHeadTween.lookAt(camera.position)
+                        TweenLite.to(monkeyHead.rotation, .2, {x: monkeyHeadTween.rotation.x, y: monkeyHeadTween.rotation.y, z: monkeyHeadTween.rotation.z})
+                    }
                 }
 
                 if (vr) {
@@ -302,6 +345,8 @@
                     camera.translateZ(3);
                 }
                 renderer.render(scene, camera);
+
+                previousCameraPosition.copy(camera.position)
             }
 
         </script>
