@@ -82,7 +82,7 @@ function setup() {
     // var mesh = new THREE.Mesh(geo, material);
     // scene.add(mesh);
 
-    for(var i = 0; i<5; i++) {
+    for(var i = 0; i<10; i++) {
     generateBubble(0.3,new THREE.Vector3(polarNoise()*range,polarNoise()*range,polarNoise()*range));
     }
 
@@ -92,7 +92,7 @@ function setup() {
 
 let bubbles = [];
 
-let range = 2;
+let range = 4;
 
 function polarNoise() {
     return 1 - Math.random();
@@ -143,7 +143,6 @@ function render() {
     requestAnimationFrame(render);
 
     audio.update();
-    console.log(audio)
 
     controls.update();
     if (mobile) {
