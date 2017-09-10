@@ -7,6 +7,83 @@ var useLights = false;
 var cubeMap = 10;
 var container = new THREE.Group();
 
+function addEvents() {
+    
+        if (WEBVR.isAvailable() === true) {
+            vrControls = new THREE.VRControls(camera);
+            vrControls.standing = true;
+    
+            controller1 = new THREE.ViveController(0);
+            controller1.standingMatrix = vrControls.getStandingMatrix();
+            controller1.castShadow = true;
+            controller1.addEventListener('triggerdown', controller1Down, false)
+            scene.add(controller1);
+            controller2 = new THREE.ViveController(1);
+            controller2.standingMatrix = vrControls.getStandingMatrix();
+            controller2.castShadow = true;
+            controller2.addEventListener('triggerdown', controller2Down, false)
+            scene.add(controller2);
+            var loader = new THREE.OBJLoader();
+            loader.setPath('assets/models/vive-controller/');
+            loader.load('vr_controller_vive_1_5.obj', function (object) {
+    
+                var controller = object.children[ 0 ];
+               // controller.material = material//new THREE.MeshPhongMaterial({color: 0xFFFFFF})
+                controller1.add(object.clone());
+                controller2.add(object.clone());
+    
+            });
+    
+            effect = new THREE.VREffect(renderer);
+            document.body.appendChild(WEBVR.getButton(effect, toggleVR));
+        }
+    
+        window.addEventListener('resize', onWindowResize, false);
+        window.addEventListener('deviceorientation', setOrientationControls, true);
+        window.addEventListener('vrdisplaypresentchange', function (event) {
+            //vr = renderer.isPresenting
+        }, false);
+    }
+    
+    currentBubble = null;
+    bubbleStartPos = new THREE.Vector3(0,0,0);
+    bubbleEndPos = new THREE.Vector3(0,0,0);
+
+    function bubbleStart(e) {
+
+    } 
+
+    function bubbleEnd(e) {
+
+    }
+
+    function controller1Down() {
+    
+        var bubbles = generateBubble();
+
+        bubbles.forEach(mesh=>{
+            mesh.matrixAutoUpdate = false;
+            mesh.matrix.copy(controller1.matrix);
+            mesh.matrixWorldNeedsUpdate = true;
+            //mesh.scale.set(15, 15 / 10, 15)
+            scene.add(mesh);
+         });
+
+    }
+    
+    function controller2Down() {
+        // console.log(controller2.position)
+    
+        // var geo = new THREE.TetrahedronGeometry(.1, Math.floor(Math.random() * 3));
+        // var mesh = new THREE.Mesh(geo, material);
+        // //mesh.position.copy(controller2.position)
+        // mesh.matrixAutoUpdate = false;
+        // mesh.matrix.copy(controller2.matrix);
+        // mesh.matrixWorldNeedsUpdate = true;
+        // //mesh.scale.set(15, 15 / 10, 15)
+        // scene.add(mesh);
+    }
+
 function init() {
 
     // renderer
@@ -85,7 +162,8 @@ function setup() {
     var material = new THREE.MeshBasicMaterial({shading: THREE.FlatShading, envMap: getCubeMap(cubeMap)});
 
     for(var i = 0; i<5; i++) {
-    generateBubble(0.3,new THREE.Vector3(polarNoise()*range,Math.random()*(range/2),polarNoise()*range));
+        var pos = new THREE.Vector3(polarNoise()*range,Math.random()*(range/2),polarNoise()*range);
+        bubbleAt(0.3, pos);
     //generateDiamonds(0.1,new THREE.Vector3(polarNoise()*range,polarNoise()*range,polarNoise()*range), material);
     }
 
@@ -102,30 +180,25 @@ function polarNoise() {
 }
 
 
-function generateDiamonds(scale, position, material)  {
-    
-    var geo = new THREE.IcosahedronGeometry( scale, 0 );
-    var mesh = new THREE.Mesh(geo, material);
-    mesh.position.set(position.x, position.y, position.z);
-    container.add(mesh);
-    
+function bubbleAt(scale, pos) {
+    var bubbles = generateBubble(0.3);
+    bubbles[0].position.copy(pos);
+    bubbles[1].position.copy(pos);
+    container.add(bubbles[0]);
+    container.add(bubbles[1]);
 }
 
-function generateBubble (scale, position) {
+function generateBubble (scale) {
 
     let geo = new THREE.SphereGeometry( scale, 32, 32 );
 
-    let outermaterial = new THREE.MeshBasicMaterial( {color: 0xffff00, envMap:getCubeMap(cubeMap)} );
-    let innermaterial = new THREE.MeshBasicMaterial( {color: 0xFFFFFF, envMap:getCubeMap(Math.floor(Math.random()*10)), side:THREE.BackSide} ); // 
+    let outermaterial = new THREE.MeshPhysicalMaterial( {color: 0xaaaaaa, envMap:getCubeMap(cubeMap), metalness:1, roughness:0.5} );
+    let innermaterial = new THREE.MeshPhysicalMaterial( {color: 0xFFFFFF, envMap:getCubeMap(Math.floor(Math.random()*10)), side:THREE.BackSide} ); // 
     
     let innerBubble = new THREE.Mesh( geo, innermaterial );
     let outerBubble = new THREE.Mesh( geo, outermaterial );
 
-    innerBubble.position.set(position.x, position.y, position.z);
-    outerBubble.position.set(position.x, position.y, position.z);
-
-        container.add(outerBubble);
-        container.add(innerBubble);
+    return [innerBubble, outerBubble];
 
 }
 

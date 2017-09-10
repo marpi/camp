@@ -7,6 +7,8 @@ export default class Drum extends Actor {
 		this.raycaster = new THREE.Raycaster();
 		this.sound();
 		this.addEvents();
+
+
 	}
 
 	shape() {
@@ -64,6 +66,14 @@ export default class Drum extends Actor {
 
 	addEvents() {
 		this.event = {};
+		if (WEBVR.isAvailable() === true) {
+			console.log('add trigger listeners');
+			this.opts.controller1.addEventListener('triggerdown', this.onTriggerDown.bind(this));
+			this.opts.controller2.addEventListener('triggerdown', this.onTriggerDown.bind(this));
+
+			this.opts.controller1.addEventListener('triggerup', this.onTriggerUp.bind(this));
+			this.opts.controller2.addEventListener('triggerup', this.onTriggerUp.bind(this));
+		}
 		document.addEventListener('keydown', this.onKeyDown.bind(this));
 		document.addEventListener('mousedown', this.onMouseDown.bind(this));
 		document.addEventListener('touchstart', this.onTouchStart.bind(this));
@@ -87,6 +97,14 @@ export default class Drum extends Actor {
 
 		this.release = this.onKeyUp.bind(this);
 		document.addEventListener('keyup', this.release);
+	}
+
+	onTriggerDown(evt) {
+		console.log('trigger', evt);
+		this.interact3d(evt.target.position);
+	}
+	onTriggerUp() {
+		this.stopInteract();
 	}
 
 	onKeyUp() {
@@ -139,15 +157,22 @@ export default class Drum extends Actor {
 		}
 	}
 
+	interact3d(pos) {
+		let dist = pos.distanceTo(this.shapes[0].position);
+		if (dist < 0.6) {
+			this.audio.playMedia(this.opts.sound || '');
+			this.setMaterial(this.shapes[0], this.opts.color);
+		}
+	}
+
 	stopInteract() {
 		this.setMaterial(this.shapes[0], 0xffffff);
-		document.removeEventListener('touchend', this.release);
-		document.removeEventListener('mouseup', this.release);
 	}
 
 	setMaterial(shape, hex) {
 		shape.material.color.setHex( hex );
 	}
+
 
 
 }
