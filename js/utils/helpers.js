@@ -129,6 +129,7 @@ function getCubeMap(i) {
         {file: "1.jpg", size: 1024},
         {file: "2.jpg", size: 1024},
         {file: "3.jpg", size: 1024},
+        {file: "class.jpg", size: 1024},
     ];
 
     var loader = new THREE.ImageLoader();
