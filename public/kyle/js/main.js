@@ -500,6 +500,7 @@ var Drum = function (_Actor) {
 				}
 				this.setMaterial(this.shapes[0], this.opts.color);
 			}
+			if (evt.keyCode === 13) this.debug({ x: 1, y: 1, z: 1 });
 
 			this.release = this.onKeyUp.bind(this);
 			document.addEventListener('keyup', this.release);
@@ -587,7 +588,6 @@ var Drum = function (_Actor) {
 				this.setMaterial(this.shapes[0], this.opts.color);
 			} else {
 				var debug = this.debug(pos);
-				this.shapes.push();
 			}
 		}
 	}, {
@@ -599,7 +599,7 @@ var Drum = function (_Actor) {
 
 			debug.position.set(pos.x, pos.y, pos.z);
 
-			this.shapes.push(cylinder);
+			this.scene.add(debug);
 		}
 	}, {
 		key: 'stopInteract',

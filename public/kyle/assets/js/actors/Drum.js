@@ -93,6 +93,7 @@ export default class Drum extends Actor {
 			}
 			this.setMaterial(this.shapes[0], this.opts.color);
 		}
+		if (evt.keyCode === 13) this.debug({x: 1, y: 1, z: 1});
 
 		this.release = this.onKeyUp.bind(this);
 		document.addEventListener('keyup', this.release);
@@ -166,7 +167,6 @@ export default class Drum extends Actor {
 		}
 		else {
 			let debug = this.debug(pos);
-			this.shapes.push()
 		}
 	}
 
@@ -181,7 +181,7 @@ export default class Drum extends Actor {
 			pos.z
 		);
 
-	    this.shapes.push(cylinder);
+	    this.scene.add(debug);
 	}
 
 	stopInteract() {
