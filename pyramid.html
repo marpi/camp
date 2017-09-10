@@ -221,7 +221,7 @@
                 var loader = new THREE.OBJLoader();
                 loader.setPath('assets/models/');
                 loader.load('monkey.obj', function (object) {
-                    globalContainer.add(object)
+                    scene.add(object)
                     object.children[0].material=material;
                     object.position.y=1;
                 });
