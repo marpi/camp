@@ -59,7 +59,7 @@ function addEvents() {
 
     function controller1Down() {
     
-        var bubbles = generateBubble();
+        var bubbles = generateBubble(0.3);
 
         bubbles.forEach(mesh=>{
             mesh.matrixAutoUpdate = false;
