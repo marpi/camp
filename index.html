@@ -50,6 +50,7 @@
             var objects = [];
             var slides = []
             var monkeyHead;
+            var monkeyHeadTween;
 
             init();
             setup();
@@ -223,7 +224,8 @@
                 loader.setPath('assets/models/');
                 loader.load('monkey.obj', function (object) {
                     globalContainer.add(object)
-                    monkeyHead=object;
+                    monkeyHead = object;
+                    monkeyHeadTween = new THREE.Object3D();
                     object.children[0].material = material;
                     object.position.y = 1;
                 });
@@ -276,7 +278,10 @@
                  }*/
 
                 // vr
-                if(monkeyHead)monkeyHead.lookAt(camera.position)
+                if (monkeyHeadTween) {
+                    monkeyHeadTween.lookAt(camera.position)
+                    TweenLite.to(monkeyHead.rotation, 2, {x: monkeyHeadTween.rotation.x, y: monkeyHeadTween.rotation.y, z: monkeyHeadTween.rotation.z})
+                }
 
                 if (vr) {
                     vrControls.update();
