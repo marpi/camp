@@ -22,8 +22,8 @@ function init() {
     scene = new THREE.Scene();
 
     // camera
-    camera = new THREE.PerspectiveCamera(90, window.innerWidth / window.innerHeight, 0.1, 10000);
-    camera.position.set(0, 1, 1);
+    camera = new THREE.PerspectiveCamera(30, window.innerWidth / window.innerHeight, 0.1, 10000);
+    camera.position.set(0, 3, 5);
 
     // controls
     controls = new THREE.OrbitControls(camera);
@@ -44,13 +44,25 @@ function setup() {
     // objects
     var drum1 = new Drum({scene, renderer, camera}, {
         position: new Position(-0.5, 0, 0),
-        sound: 'assets/sound/low',
+        sound: 'assets/sound/highhat',
         color: 0xffffff
     });
 
     var drum2 = new Drum({scene, renderer, camera}, {
         position: new Position(0.5, 0, 0),
+        sound: 'assets/sound/low',
+        color: 0xffffff
+    });
+
+    var drum3 = new Drum({scene, renderer, camera}, {
+        position: new Position(1.25, 0, 0.75),
         sound: 'assets/sound/high',
+        color: 0xffffff
+    });
+
+    var drum4 = new Drum({scene, renderer, camera}, {
+        position: new Position(-1.25, 0, 0.75),
+        sound: 'assets/sound/snare',
         color: 0xffffff
     });
 }

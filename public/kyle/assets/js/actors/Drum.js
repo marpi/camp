@@ -19,7 +19,7 @@ export default class Drum extends Actor {
 
 		cylinder.position.set(
 			this.opts.position.x,
-			this.opts.position.y - 0.5,
+			this.opts.position.y,
 			this.opts.position.z
 		);
 
@@ -38,8 +38,8 @@ export default class Drum extends Actor {
 
 	onMouseDown(evt) {
 		evt.preventDefault();
-		this.event.x = (evt.clientX / this.renderer.domElement.clientWidth) * 2 - 1;
-		this.event.y = (evt.clientY / this.renderer.domElement.clientHeight) * 2 - 1;
+		this.event.x = ( event.clientX / this.renderer.domElement.clientWidth ) * 2 - 1;
+		this.event.y = -( event.clientY / this.renderer.domElement.clientHeight ) * 2 + 1;
 
 		this.release = this.onMouseUp.bind(this);
 		document.addEventListener('mouseup', this.release);
@@ -48,8 +48,8 @@ export default class Drum extends Actor {
 	}
 	onTouchStart(evt) {
 		evt.preventDefault();
-		this.event.x = (evt.touches[0].clientX / this.renderer.domElement.clientWidth) * 2 - 1;
-		this.event.y = (evt.touches[0].clientY / this.renderer.domElement.clientHeight) * 2 - 1;
+		this.event.x = ( event.touches[0].clientX / this.renderer.domElement.clientWidth ) * 2 - 1;
+		this.event.y = -( event.touches[0].clientY / this.renderer.domElement.clientHeight ) * 2 + 1;
 
 		this.release = this.onMouseUp.bind(this);
 		document.addEventListener('touchend', this.release);
@@ -84,7 +84,6 @@ export default class Drum extends Actor {
 	}
 
 	setMaterial(shape, hex) {
-		console.log(hex);
 		shape.material.color.setHex( hex );
 	}
 

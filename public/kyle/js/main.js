@@ -76,8 +76,8 @@ module.exports = __webpack_require__(1);
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__utils__ = __webpack_require__(4);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__actors_Drum__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__utils__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__actors_Drum__ = __webpack_require__(4);
 
 
 
@@ -102,8 +102,8 @@ function init() {
     scene = new THREE.Scene();
 
     // camera
-    camera = new THREE.PerspectiveCamera(90, window.innerWidth / window.innerHeight, 0.1, 10000);
-    camera.position.set(0, 1, 1);
+    camera = new THREE.PerspectiveCamera(30, window.innerWidth / window.innerHeight, 0.1, 10000);
+    camera.position.set(0, 3, 5);
 
     // controls
     controls = new THREE.OrbitControls(camera);
@@ -123,13 +123,25 @@ function setup() {
     // objects
     var drum1 = new __WEBPACK_IMPORTED_MODULE_1__actors_Drum__["a" /* default */]({ scene: scene, renderer: renderer, camera: camera }, {
         position: new __WEBPACK_IMPORTED_MODULE_0__utils__["a" /* Position */](-0.5, 0, 0),
-        sound: 'assets/sound/low',
+        sound: 'assets/sound/highhat',
         color: 0xffffff
     });
 
     var drum2 = new __WEBPACK_IMPORTED_MODULE_1__actors_Drum__["a" /* default */]({ scene: scene, renderer: renderer, camera: camera }, {
         position: new __WEBPACK_IMPORTED_MODULE_0__utils__["a" /* Position */](0.5, 0, 0),
+        sound: 'assets/sound/low',
+        color: 0xffffff
+    });
+
+    var drum3 = new __WEBPACK_IMPORTED_MODULE_1__actors_Drum__["a" /* default */]({ scene: scene, renderer: renderer, camera: camera }, {
+        position: new __WEBPACK_IMPORTED_MODULE_0__utils__["a" /* Position */](1.25, 0, 0.75),
         sound: 'assets/sound/high',
+        color: 0xffffff
+    });
+
+    var drum4 = new __WEBPACK_IMPORTED_MODULE_1__actors_Drum__["a" /* default */]({ scene: scene, renderer: renderer, camera: camera }, {
+        position: new __WEBPACK_IMPORTED_MODULE_0__utils__["a" /* Position */](-1.25, 0, 0.75),
+        sound: 'assets/sound/snare',
         color: 0xffffff
     });
 }
@@ -165,7 +177,36 @@ function render() {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Actor__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Position__ = __webpack_require__(3);
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return __WEBPACK_IMPORTED_MODULE_0__Position__["a"]; });
+
+
+
+
+/***/ }),
+/* 3 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Position = function Position(x, y, z) {
+	_classCallCheck(this, Position);
+
+	this.x = x || 0;
+	this.y = y || 0;
+	this.z = z || 0;
+	return this;
+};
+
+/* harmony default export */ __webpack_exports__["a"] = (Position);
+
+/***/ }),
+/* 4 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Actor__ = __webpack_require__(5);
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -202,7 +243,7 @@ var Drum = function (_Actor) {
 			var material = new THREE.MeshPhongMaterial({ shading: 0xffffff });
 			var cylinder = new THREE.Mesh(geometry, material);
 
-			cylinder.position.set(this.opts.position.x, this.opts.position.y - 0.5, this.opts.position.z);
+			cylinder.position.set(this.opts.position.x, this.opts.position.y, this.opts.position.z);
 
 			this.shapes.push(cylinder);
 		}
@@ -222,8 +263,8 @@ var Drum = function (_Actor) {
 		key: 'onMouseDown',
 		value: function onMouseDown(evt) {
 			evt.preventDefault();
-			this.event.x = evt.clientX / this.renderer.domElement.clientWidth * 2 - 1;
-			this.event.y = evt.clientY / this.renderer.domElement.clientHeight * 2 - 1;
+			this.event.x = event.clientX / this.renderer.domElement.clientWidth * 2 - 1;
+			this.event.y = -(event.clientY / this.renderer.domElement.clientHeight) * 2 + 1;
 
 			this.release = this.onMouseUp.bind(this);
 			document.addEventListener('mouseup', this.release);
@@ -234,8 +275,8 @@ var Drum = function (_Actor) {
 		key: 'onTouchStart',
 		value: function onTouchStart(evt) {
 			evt.preventDefault();
-			this.event.x = evt.touches[0].clientX / this.renderer.domElement.clientWidth * 2 - 1;
-			this.event.y = evt.touches[0].clientY / this.renderer.domElement.clientHeight * 2 - 1;
+			this.event.x = event.touches[0].clientX / this.renderer.domElement.clientWidth * 2 - 1;
+			this.event.y = -(event.touches[0].clientY / this.renderer.domElement.clientHeight) * 2 + 1;
 
 			this.release = this.onMouseUp.bind(this);
 			document.addEventListener('touchend', this.release);
@@ -283,7 +324,6 @@ var Drum = function (_Actor) {
 	}, {
 		key: 'setMaterial',
 		value: function setMaterial(shape, hex) {
-			console.log(hex);
 			shape.material.color.setHex(hex);
 		}
 	}]);
@@ -294,7 +334,7 @@ var Drum = function (_Actor) {
 /* harmony default export */ __webpack_exports__["a"] = (Drum);
 
 /***/ }),
-/* 3 */
+/* 5 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -338,35 +378,6 @@ var Actor = function () {
 }();
 
 /* harmony default export */ __webpack_exports__["a"] = (Actor);
-
-/***/ }),
-/* 4 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Position__ = __webpack_require__(5);
-/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return __WEBPACK_IMPORTED_MODULE_0__Position__["a"]; });
-
-
-
-
-/***/ }),
-/* 5 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var Position = function Position(x, y, z) {
-	_classCallCheck(this, Position);
-
-	this.x = x || 0;
-	this.y = y || 0;
-	this.z = z || 0;
-	return this;
-};
-
-/* harmony default export */ __webpack_exports__["a"] = (Position);
 
 /***/ })
 /******/ ]);
