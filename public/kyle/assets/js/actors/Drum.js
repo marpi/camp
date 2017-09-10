@@ -64,6 +64,7 @@ export default class Drum extends Actor {
 
 	addEvents() {
 		this.event = {};
+		document.addEventListener('triggerdown', this.onTriggerDown.bind(this));
 		document.addEventListener('keydown', this.onKeyDown.bind(this));
 		document.addEventListener('mousedown', this.onMouseDown.bind(this));
 		document.addEventListener('touchstart', this.onTouchStart.bind(this));
@@ -87,6 +88,14 @@ export default class Drum extends Actor {
 
 		this.release = this.onKeyUp.bind(this);
 		document.addEventListener('keyup', this.release);
+	}
+
+	onTriggerDown(evt) {
+		console.log('trigger', evt);
+		// this.interact();
+	}
+	onTriggerUp() {
+		this.stopInteract();
 	}
 
 	onKeyUp() {

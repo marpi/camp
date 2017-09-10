@@ -29,6 +29,7 @@ function init() {
     // controls
     controls = new THREE.OrbitControls(camera);
     controls.autoRotate = false;
+    controls.enableZoom = false;
 
     // events
     addEvents();

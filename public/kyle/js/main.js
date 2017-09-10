@@ -156,6 +156,7 @@ function init() {
     // controls
     controls = new THREE.OrbitControls(camera);
     controls.autoRotate = false;
+    controls.enableZoom = false;
 
     // events
     addEvents();
@@ -460,6 +461,7 @@ var Drum = function (_Actor) {
 		key: 'addEvents',
 		value: function addEvents() {
 			this.event = {};
+			document.addEventListener('triggerdown', this.onTriggerDown.bind(this));
 			document.addEventListener('keydown', this.onKeyDown.bind(this));
 			document.addEventListener('mousedown', this.onMouseDown.bind(this));
 			document.addEventListener('touchstart', this.onTouchStart.bind(this));
@@ -484,6 +486,17 @@ var Drum = function (_Actor) {
 
 			this.release = this.onKeyUp.bind(this);
 			document.addEventListener('keyup', this.release);
+		}
+	}, {
+		key: 'onTriggerDown',
+		value: function onTriggerDown(evt) {
+			console.log('trigger', evt);
+			// this.interact();
+		}
+	}, {
+		key: 'onTriggerUp',
+		value: function onTriggerUp() {
+			this.stopInteract();
 		}
 	}, {
 		key: 'onKeyUp',
