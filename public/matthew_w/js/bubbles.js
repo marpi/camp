@@ -85,7 +85,7 @@ function setup() {
     var material = new THREE.MeshBasicMaterial({shading: THREE.FlatShading, envMap: getCubeMap(cubeMap)});
 
     for(var i = 0; i<5; i++) {
-    generateBubble(0.3,new THREE.Vector3(polarNoise()*range,polarNoise()*range,polarNoise()*range));
+    generateBubble(0.3,new THREE.Vector3(polarNoise()*range,Math.random()*(range/2),polarNoise()*range));
     //generateDiamonds(0.1,new THREE.Vector3(polarNoise()*range,polarNoise()*range,polarNoise()*range), material);
     }
 
@@ -113,14 +113,13 @@ function generateDiamonds(scale, position, material)  {
 
 function generateBubble (scale, position) {
 
-    let outergeometry = new THREE.SphereGeometry( scale, 32, 32 );
-    let innergeometry = new THREE.SphereGeometry( scale * 0.9, 32, 32 );
+    let geo = new THREE.SphereGeometry( scale, 32, 32 );
 
     let outermaterial = new THREE.MeshBasicMaterial( {color: 0xffff00, envMap:getCubeMap(cubeMap)} );
     let innermaterial = new THREE.MeshBasicMaterial( {color: 0xFFFFFF, envMap:getCubeMap(Math.floor(Math.random()*10)), side:THREE.BackSide} ); // 
     
-    let innerBubble = new THREE.Mesh( innergeometry, innermaterial );
-    let outerBubble = new THREE.Mesh( outergeometry, outermaterial );
+    let innerBubble = new THREE.Mesh( geo, innermaterial );
+    let outerBubble = new THREE.Mesh( geo, outermaterial );
 
     innerBubble.position.set(position.x, position.y, position.z);
     outerBubble.position.set(position.x, position.y, position.z);
@@ -147,9 +146,7 @@ function render() {
         controller1.update();
         controller2.update();
         effect.requestAnimationFrame(render);
-        camera.position.y -= 1.5;
         effect.render(scene, camera);
-        camera.position.y += 1.5;
         return;
     }
 
