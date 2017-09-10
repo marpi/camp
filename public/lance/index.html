@@ -38,10 +38,16 @@
 
         <script>
 
-            var camera, scene, renderer, effect, controls, vrControls, light;
+            var camera, scene, renderer, effect, controls, vrControls, light, light1, light2, light3, light4, lights;
             var controller1, controller2;
             var mobile = false;
             var vr = false;
+            var max = 40;
+            var material;
+            var container
+
+            var objects = [];
+            var slides = []
 
             init();
             setup();
@@ -49,11 +55,17 @@
 
             function init() {
 
+                // audio
+
+                //audio = new AudioReactive({});
+                //audio.playMedia('assets/sound/ritual');
+
                 // renderer
 
                 renderer = new THREE.WebGLRenderer({antialias: true});
                 renderer.setPixelRatio(window.devicePixelRatio);
                 renderer.setSize(window.innerWidth, window.innerHeight);
+                renderer.shadowMap.enabled = true;
                 document.body.appendChild(renderer.domElement);
 
                 // scene
@@ -62,13 +74,13 @@
 
                 // camera
 
-                camera = new THREE.PerspectiveCamera(90, window.innerWidth / window.innerHeight, 0.1, 10000);
-                camera.position.set(0, 0, 3);
+                camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.1, 10000);
+                camera.position.set(0, 7, 7);
 
                 // controls
 
                 controls = new THREE.OrbitControls(camera);
-                controls.autoRotate = true;
+                //controls.autoRotate = true;
 
                 // events
 
@@ -77,26 +89,159 @@
             }
 
             function setup() {
+                var cubeMap = getCubeMap(0);
+
+                var cubeShader = THREE.ShaderLib['cube'];
+                cubeShader.uniforms['tCube'].value = cubeMap;
+
+                var skyBoxMaterial = new THREE.ShaderMaterial({
+                    fragmentShader: cubeShader.fragmentShader,
+                    vertexShader: cubeShader.vertexShader,
+                    uniforms: cubeShader.uniforms,
+                    depthWrite: false,
+                    side: THREE.BackSide
+                });
+
+                var skyBox = new THREE.Mesh(new THREE.CubeGeometry(1000, 1000, 1000), skyBoxMaterial);
+
+                scene.add(skyBox);
 
                 // lights
 
-                light = new THREE.DirectionalLight(0xffd0c2);
-                light.position.set(.2, .1, .2);
+                var cube = new THREE.CubeGeometry( -.001, -.001, -.001 );
+                light1 = new THREE.PointLight( 0xff0040, 2, 25 );
+                light1.add( new THREE.Mesh( cube, new THREE.MeshBasicMaterial( { color: 0xff0040 } ) ) );
+                scene.add( light1 );
+                light2 = new THREE.PointLight( 0x0040ff, 2, 25 );
+                light2.add( new THREE.Mesh( cube, new THREE.MeshBasicMaterial( { color: 0x0040ff } ) ) );
+                scene.add( light2 );
+                light3 = new THREE.PointLight( 0x80ff80, 2, 25 );
+                light3.add( new THREE.Mesh( cube, new THREE.MeshBasicMaterial( { color: 0x80ff80 } ) ) );
+                scene.add( light3 );
+                light4 = new THREE.PointLight( 0xffaa00, 2, 25 );
+                light4.add( new THREE.Mesh( cube, new THREE.MeshBasicMaterial( { color: 0xffaa00 } ) ) );
+                scene.add( light4 );
+
+                light = new THREE.DirectionalLight(0xFFFFFF);
+                light.position.set(.1, .5, .2);
+                light.castShadow = true;
+                //directionalLight.shadowDarkness = .1
+                var roz = 2
+                light.shadow.camera.near = -roz * 2
+                light.shadow.camera.far = roz * 2
+                light.shadow.camera.left = -roz * 2
+                light.shadow.camera.right = roz * 2
+                light.shadow.camera.top = roz
+                light.shadow.camera.bottom = -roz
+                light.shadow.mapSize.width = 1024;
+                light.shadow.mapSize.height = 1024;
+                light.shadow.bias = -0.002
                 scene.add(light);
 
                 // objects
 
-                var material = new THREE.MeshPhongMaterial({shading: THREE.FlatShading});
-                var geo = new THREE.OctahedronGeometry(1, 2);
+                material = new THREE.MeshStandardMaterial({
+                    //color:0xFF0000,
+                    metalness: .3,
+                    roughness: .1,
+                    envMap: cubeMap,
+                    shading: THREE.FlatShading
+                });//shading: THREE.FlatShading
+
+                container = new THREE.Group();
+                for (var i = 0; i < 500; i++) {
+                    var geo = new THREE.TetrahedronGeometry(.1, Math.floor(Math.random() * 4));
+                    var mesh = new THREE.Mesh(geo, material);
+                    mesh.position.x = -40 + Math.random() * 70;
+                    mesh.position.y = -10 + Math.random() * 40;
+                    mesh.position.z = -10 + Math.random() * 5;
+                    var s = Math.random() * -14
+                    mesh.scale.set(s, s, s)
+                    mesh.rotation.set(Math.random() * 4, Math.random() * 4, Math.random() * 4)
+                    container.add(mesh);
+                }
+
+                var geo = new THREE.SphereGeometry(.1, -.1);
                 var mesh = new THREE.Mesh(geo, material);
-                scene.add(mesh);
+                mesh.position.y = -1;
+                mesh.scale.set(15, 15 / 10, 15)
+                container.add(mesh);
+
+                var geom = new THREE.Geometry();
+                for (var i = 6; i < container.children.length; i++) {
+                    container.children[i].updateMatrix();
+                    geom.merge(container.children[i].geometry, container.children[i].matrix);
+                }
+
+                container = new THREE.Mesh(geom, material);
+                container.castShadow = false;
+                container.receiveShadow = true;
+                scene.add(container)
+
+
+                for (var i = 0; i < 20; i++) {
+                    var geo = new THREE.BoxGeometry(1, .1, 1);
+                    //var geo = new THREE.CylinderGeometry(.001 * i, .2 * (-2 + i), .3, 3);
+                    var mesh = new THREE.Mesh(geo, material);
+                    mesh.position.y = -.25 * i + 4
+                    mesh.castShadow = true;
+                    mesh.receiveShadow = true;
+                    scene.add(mesh)
+                    slides.push(mesh);
+                }
+
+                animate()
             }
 
-            function render() {
-                var time = Date.now() * 0.001;
+            function animate() {
 
-                light.position.x = Math.sin(time);
-                light.position.z = Math.cos(time);
+                for (var i = 0; i < slides.length; i++) {
+                    var mesh = slides[i]
+                    TweenLite.to(mesh.rotation, 1, {
+                        delay: 2 - .01 * i,
+                        y: mesh.rotation.y + Math.PI * .3,
+                        ease: Back.easeOut
+                    });
+                }
+
+                TweenLite.delayedCall(2, animate)
+            }
+
+
+            function render() {
+                var time = Date.now() * 0.0001;
+
+
+                light.position.x = Math.sin(time*2) * 0;
+                light.position.z = Math.cos(time*2) * 0;
+                light1.position.x = Math.sin(time*2) * -2.5;
+                light1.position.z = Math.cos(time*2) * -2.5;
+                light2.position.x = Math.sin(time*2) * 2.5;
+                light2.position.z = Math.cos(time*2) * 2.5;
+                light3.position.x = Math.sin(time*2) * 5;
+                light3.position.z = Math.cos(time*2) * 5;
+                light4.position.x = Math.sin(time*2) * -5;
+                light4.position.z = Math.cos(time*2) * -5;
+
+                /*audio.frequencyData = audio.update();
+                 
+                 for (var i = 0; i < objects.length; i++) {
+                 var s = 5 * audio.frequencies[i] / 128
+                 objects[i].scale.set(s, s, s)
+                 }*/
+                /*var i = 0
+                 var perlinScale = Math.sin(time * .3) / 5;
+                 for (var _x = 0; _x < max; _x++) {
+                 for (var _y = 0; _y < max; _y++) {
+                 for (var _z = 0; _z < 1; _z++) {
+                 var mesh = objects[i];
+                 var perlinValue = noise.perlin3(_x * perlinScale + time, _y * perlinScale, _z * perlinScale) * .5 + .5
+                 mesh.scale.set(perlinValue, perlinValue, perlinValue)
+                 //mesh.rotation.y = perlinValue;
+                 i++;
+                 }
+                 }
+                 }*/
 
                 // vr
 
@@ -105,7 +250,9 @@
                     controller1.update();
                     controller2.update();
                     effect.requestAnimationFrame(render);
+                    container.position.y = 1;
                     effect.render(scene, camera);
+                    //camera.position.y+=1;
                     return;
                 }
 
