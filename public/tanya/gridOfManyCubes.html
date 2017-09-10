@@ -44,14 +44,12 @@
             var vr = false;
 
             var objects = [];
-            var max = 40;
 
             init();
             setup();
             render();
 
             function init() {
-
 
                 // renderer
                 //this is your engine
@@ -107,9 +105,8 @@
                 //geometry is the skeleton and the mesh is the material or covering
                 //environmental cube map
                 var map = getCubeMap(4);
-
                 var cubeShader = THREE.ShaderLib['cube'];
-                cubeShader.uniforms['tCube'].value = map;
+                 cubeShader.uniforms['tCube'].value = map
                  
                  var skyBoxMaterial = new THREE.ShaderMaterial({
                  fragmentShader: cubeShader.fragmentShader,
@@ -126,7 +123,7 @@
                 //phong material
                 var material = new THREE.MeshStandardMaterial({
                     metalness:1,
-                    roughness:0.6,
+                    roughness:0,
                     //color:0x008080,
                     envMap:map,
                     shading: THREE.FlatShading
@@ -137,36 +134,26 @@
                 
 
                 //var geo2 = new THREE.TetrahedronGeometry(.1, 0);
-                
+                var max = 10;
                 var size = .1;
 
                 for(var _x=0; _x<max; _x++){
                     for(var _y=0; _y<max; _y++){
-                        for(var _z=0; _z<1; _z++){
-                            /*var mesh =objects[i];*/
-                            var scale = noise.perlin3(_x * .15, _y * .15, _z * .15) * .5 + .5;
-                            console.log(scale);
-                            var geo = new THREE.BoxGeometry(size, size, size);
-                            var mesh = new THREE.Mesh(geo, material);
+                        for(var _z=0; _z<20; _z++){
+                            /*var mesh =objects[i];
+                            var scale = noise.perlin3(_x*.25, _y*.15, _z*.15), .5, .5);
                             scene.add(mesh);
-                            objects.push(mesh);
-
-                            mesh.position.x=(_x-max/2)*size;
-                            mesh.position.y=(_y-max/2)*size;
-
-                            /*scene.add(mesh);
                             mesh.rotation.y=perlinValue;
-                            i++;
+                            i++;*/
 
-                            var geo = new THREE.BoxGeometry(size, size, size)
+                            /**/var geo = new THREE.BoxGeometry(size, size, size)
                             var mesh = new THREE.Mesh(geo, material);
-                            //mesh.castShadows=true;
                             scene.add(mesh);
                             objects.push(mesh);
                             
                             mesh.position.x=-3+Math.random()*6;
                             mesh.position.y=-3+Math.random()*6;
-                            mesh.position.z=-3+Math.random()*6;*/
+                            mesh.position.z=-3+Math.random()*6;
 
                             //mesh.rotation.set(Math.random()*Math.PI*2, Math.random())
                         }
@@ -193,21 +180,6 @@
                 //no light position will be a constant light
                 //light.position.x = Math.sin(time);
                 //light.position.z = Math.cos(time);
-
-
-                var i = 0
-                var perlinScale=Math.sin(time*.3)/5
-                for (var _x = 0; _x < max; _x++) {
-                    for (var _y = 0; _y < max; _y++) {
-                        for (var _z = 0; _z < 1; _z++) {
-                            var mesh = objects[i];
-                            var perlinValue = noise.perlin3(_x * perlinScale + time, _y * perlinScale, _z * perlinScale) * .5 + .5
-                            mesh.scale.set(perlinValue, perlinValue, perlinValue)
-                            //mesh.rotation.y = perlinValue;
-                            i++;
-                        }
-                    }
-                }
 
                 // vr
 
