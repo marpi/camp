@@ -19,7 +19,7 @@ function addEvents() {
         loader.load('vr_controller_vive_1_5.obj', function (object) {
 
             var controller = object.children[ 0 ];
-            controller.material = new THREE.MeshPhongMaterial({color: 0xFFFFFF})
+            controller.material = material//new THREE.MeshPhongMaterial({color: 0xFFFFFF})
             controller1.add(object.clone());
             controller2.add(object.clone());
 
