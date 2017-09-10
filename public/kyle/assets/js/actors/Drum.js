@@ -104,6 +104,7 @@ export default class Drum extends Actor {
 	}
 
 	onMouseDown(evt) {
+		console.log(evt);
 		evt.preventDefault();
 		this.event.x = ( event.clientX / this.renderer.domElement.clientWidth ) * 2 - 1;
 		this.event.y = -( event.clientY / this.renderer.domElement.clientHeight ) * 2 + 1;
