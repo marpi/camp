@@ -4,7 +4,7 @@ var mobile = false;
 var vr = false;
 var audio = new AudioReactive({});
 var useLights = false;
-var cubeMap = 10;
+var cubeMap = 9;
 var container = new THREE.Group();
 
 function addEvents() {
@@ -59,7 +59,7 @@ function addEvents() {
 
     function controller1Down() {
     
-        var bubbles = generateBubble(0.3);
+        var bubbles = generateBubble(0.25);
 
         bubbles.forEach(mesh=>{
             mesh.matrixAutoUpdate = false;
@@ -72,16 +72,15 @@ function addEvents() {
     }
     
     function controller2Down() {
-        // console.log(controller2.position)
-    
-        // var geo = new THREE.TetrahedronGeometry(.1, Math.floor(Math.random() * 3));
-        // var mesh = new THREE.Mesh(geo, material);
-        // //mesh.position.copy(controller2.position)
-        // mesh.matrixAutoUpdate = false;
-        // mesh.matrix.copy(controller2.matrix);
-        // mesh.matrixWorldNeedsUpdate = true;
-        // //mesh.scale.set(15, 15 / 10, 15)
-        // scene.add(mesh);
+        var bubbles = generateBubble(0.25);
+        
+                bubbles.forEach(mesh=>{
+                    mesh.matrixAutoUpdate = false;
+                    mesh.matrix.copy(controller1.matrix);
+                    mesh.matrixWorldNeedsUpdate = true;
+                    //mesh.scale.set(15, 15 / 10, 15)
+                    scene.add(mesh);
+                 });
     }
 
 function init() {
@@ -161,11 +160,11 @@ function setup() {
 
     var material = new THREE.MeshBasicMaterial({shading: THREE.FlatShading, envMap: getCubeMap(cubeMap)});
 
-    for(var i = 0; i<5; i++) {
-        var pos = new THREE.Vector3(polarNoise()*range,Math.random()*(range/2),polarNoise()*range);
-        bubbleAt(0.3, pos);
-    //generateDiamonds(0.1,new THREE.Vector3(polarNoise()*range,polarNoise()*range,polarNoise()*range), material);
-    }
+    // for(var i = 0; i<5; i++) {
+    //     var pos = new THREE.Vector3(polarNoise()*range,Math.random()*(range/2),polarNoise()*range);
+    //     bubbleAt(0.3, pos);
+    // //generateDiamonds(0.1,new THREE.Vector3(polarNoise()*range,polarNoise()*range,polarNoise()*range), material);
+    // }
 
     scene.add(container);
 
