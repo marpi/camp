@@ -40,8 +40,9 @@
 
             var camera, scene, renderer, effect, controls, vrControls, light;
             var controller1, controller2;
-            var meshCount = 150;
-            var meshes = [];
+            var meshCount = 40;
+            var helixCount = 6;
+            var helixes = [];
             var mobile = false;
             var vr = false;
 
@@ -103,58 +104,59 @@
                 // objects
                 // var material = new THREE.MeshBasicMaterial( { color: 0xffff00, side: THREE.DoubleSide } );
                 // var material = new THREE.MeshPhongMaterial({shading:THREE.FlatShading});
-                var material = new THREE.MeshStandardMaterial({
+                var _material = new THREE.MeshStandardMaterial({
                   metalness: 1,
                   roughness: 0.2,
-                  envMap: cubeMap,
-                  // shading: THREE.FlatShading,
+                  gradientMap: cubeMap,
+                  shading: THREE.FlatShading,
                 });
-                for(var i = 0; i < meshCount; i++) {
-                  var size = 0.1;
-                  // var geometry = new THREE.BoxGeometry(size, size, size);
-                  var geometry = new THREE.TetrahedronGeometry(size, 4);
-                  var mesh = new THREE.Mesh(geometry, material);
 
-                  // var angle = (i / meshCount * 360 * 8) * Math.PI / 180;
-                  // var radius = 1.0;
+              var material = new THREE.MeshToonMaterial({
+                envMap: cubeMap,
+              });
 
-                  // mesh.position.x = Math.sin(angle) * radius;
-                  // mesh.position.y = i * 0.1 - 10.0;
-                  // mesh.position.z = Math.cos(angle) * radius - 10.0;
+                var size = 0.1;
+                var geometry = new THREE.TetrahedronGeometry(size, 4);
 
-                  meshes.push(mesh);
-                  scene.add(mesh);
+                for(var h = 0; h < helixCount; h++) {
+                  var helix = [];
+                  helixes.push(helix);
+
+                  for(var i = 0; i < meshCount; i++) {
+                    var mesh = new THREE.Mesh(geometry, material);
+
+                    helix.push(mesh);
+                    scene.add(mesh);
+                  }
                 }
-
-
             }
 
             function render() {
                 var time = Date.now() * 0.001;
 
-                // light.position.x = Math.sin(time);
-                // light.position.z = Math.cos(time);
+                light.position.x = Math.sin(time);
+                light.position.z = Math.cos(time);
 
-                var height = 30.0;
-                var winding = 2;
-                for(var i in meshes) {
-                  var mesh = meshes[i];
+                var height = 10.0;
+                var winding = 4.0;
+
+              for(var h in helixes) {
+                var helix = helixes[h];
+                var offset = 360 / helixes.length * h;
+
+                for(var i in helix) {
+                  var mesh = helix[i];
                   var ratio = i / meshCount;
-                  // var angle = ((time + i) % 360) * Math.PI / 180;
-                  var angle = ((ratio * 360 * winding) + time * 60.0) * Math.PI / 180;
-                  var radius = ratio * 2.0 + 0.2;
-                  // var radius = i * 0.05 + 0.2;
-                  // var radius = Math.sin(i / meshCount) * 2.0;
+                  var angle = ((ratio * 360 * winding + offset) + time * 120.0) * Math.PI / 180;
+                  // var radius = ratio * 2.0 + 0.2;
+                  var radius = 0.6;
 
                   mesh.position.x = Math.sin(angle) * radius;
                   // mesh.position.y = (Math.cos(ratio * time) * 0.2) + (-i * height / meshCount + 2.0);
-                  mesh.position.y = Math.cos(angle) * radius + 2.0;
-                  mesh.position.z = (-i * height / meshCount) + 2.0;
-
-                  // mesh.rotation.x = time * 0.2;
-                  // mesh.rotation.y = time * 0.4;
-                  // mesh.rotation.z = time * 0.6;
+                  mesh.position.y = (-i * height / meshCount) + (height / 2);
+                  mesh.position.z = Math.cos(angle) * radius + 2.0;
                 }
+              }
 
                 // vr
 
