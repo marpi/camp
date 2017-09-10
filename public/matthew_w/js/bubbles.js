@@ -180,8 +180,6 @@ function polarNoise() {
 }
 
 
-}
-
 function bubbleAt(scale, pos) {
     var bubbles = generateBubble(0.3);
     bubbles[0].position.copy(pos);
