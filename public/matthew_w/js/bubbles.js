@@ -4,7 +4,7 @@ var mobile = false;
 var vr = false;
 var audio = new AudioReactive({});
 var useLights = false;
-
+var cubeMap = 10;
 var container = new THREE.Group();
 
 function init() {
@@ -43,7 +43,7 @@ function init() {
 let lights = [];
 let NUM_LIGHTS = 3;
 
-let envMap = getCubeMap(0);
+let envMap = getCubeMap(cubeMap);
 
 function setup() {
 
@@ -60,7 +60,7 @@ function setup() {
 
 
     var cubeShader = THREE.ShaderLib['cube'];
-    cubeShader.uniforms['tCube'].value = getCubeMap(10);
+    cubeShader.uniforms['tCube'].value = getCubeMap(cubeMap);
     
     var skyBoxMaterial = new THREE.ShaderMaterial({
     fragmentShader: cubeShader.fragmentShader,
@@ -82,8 +82,11 @@ function setup() {
     // var mesh = new THREE.Mesh(geo, material);
     // scene.add(mesh);
 
-    for(var i = 0; i<10; i++) {
+    var material = new THREE.MeshBasicMaterial({shading: THREE.FlatShading, envMap: getCubeMap(cubeMap)});
+
+    for(var i = 0; i<5; i++) {
     generateBubble(0.3,new THREE.Vector3(polarNoise()*range,polarNoise()*range,polarNoise()*range));
+    //generateDiamonds(0.1,new THREE.Vector3(polarNoise()*range,polarNoise()*range,polarNoise()*range), material);
     }
 
     scene.add(container);
@@ -95,7 +98,17 @@ let bubbles = [];
 let range = 4;
 
 function polarNoise() {
-    return 1 - Math.random();
+    return 0.5 - Math.random();
+}
+
+
+function generateDiamonds(scale, position, material)  {
+    
+    var geo = new THREE.IcosahedronGeometry( scale, 0 );
+    var mesh = new THREE.Mesh(geo, material);
+    mesh.position.set(position.x, position.y, position.z);
+    container.add(mesh);
+    
 }
 
 function generateBubble (scale, position) {
@@ -103,7 +116,7 @@ function generateBubble (scale, position) {
     let outergeometry = new THREE.SphereGeometry( scale, 32, 32 );
     let innergeometry = new THREE.SphereGeometry( scale * 0.9, 32, 32 );
 
-    let outermaterial = new THREE.MeshBasicMaterial( {color: 0xffff00, envMap:getCubeMap(10)} );
+    let outermaterial = new THREE.MeshBasicMaterial( {color: 0xffff00, envMap:getCubeMap(cubeMap)} );
     let innermaterial = new THREE.MeshBasicMaterial( {color: 0xFFFFFF, envMap:getCubeMap(Math.floor(Math.random()*10)), side:THREE.BackSide} ); // 
     
     let innerBubble = new THREE.Mesh( innergeometry, innermaterial );
