@@ -500,6 +500,7 @@ var Drum = function (_Actor) {
 				}
 				this.setMaterial(this.shapes[0], this.opts.color);
 			}
+			if (evt.keyCode === 13) this.debug({ x: 1, y: 1, z: 1 });
 
 			this.release = this.onKeyUp.bind(this);
 			document.addEventListener('keyup', this.release);
@@ -509,7 +510,11 @@ var Drum = function (_Actor) {
 		value: function onTriggerDown(evt) {
 			console.log('trigger', evt.target.position);
 			console.log('dist', this.shapes[0].position.distanceTo(evt.target.position));
-			this.interact3d(evt.target.position);
+
+			var vec = new THREE.Vector3();
+			vec.setFromMatrixPosition(evt.target.matrix);
+
+			this.interact3d(vec);
 		}
 	}, {
 		key: 'onTriggerUp',
@@ -585,21 +590,19 @@ var Drum = function (_Actor) {
 			if (dist < 0.6) {
 				this.audio.playMedia(this.opts.sound || '');
 				this.setMaterial(this.shapes[0], this.opts.color);
-			} else {
-				var debug = this.debug(pos);
-				this.shapes.push();
 			}
 		}
 	}, {
 		key: 'debug',
 		value: function debug(pos) {
+			return;
 			var geometry = new THREE.BoxGeometry(0.1, 0.1, 0.1);
 			var material = new THREE.MeshPhongMaterial({ shading: 0xFFFFFF });
 			var debug = new THREE.Mesh(geometry, material);
 
 			debug.position.set(pos.x, pos.y, pos.z);
 
-			this.shapes.push(cylinder);
+			this.scene.add(debug);
 		}
 	}, {
 		key: 'stopInteract',
