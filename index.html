@@ -130,7 +130,7 @@
                 material = new THREE.MeshStandardMaterial({
                     //color:0xFF0000,
                     metalness: 1,
-                    roughness: .5,
+                    roughness: .3,
                     envMap: cubeMap,
                     shading: THREE.FlatShading
                 });//shading: THREE.FlatShading
@@ -141,7 +141,7 @@
                 // gold diamonds
 
                 container = new THREE.Group();
-                for (var i = 0; i < 199; i++) {
+                for (var i = 0; i < 99; i++) {
                     var geo = new THREE.TetrahedronGeometry(.1, Math.floor(Math.random() * 3));
                     var mesh = new THREE.Mesh(geo, material);
                     while (mesh.position.distanceTo(scene.position) > 2 || mesh.position.distanceTo(scene.position) < 1.5 || mesh.position.x == 0 || mesh.position.y < -1) {
@@ -217,6 +217,14 @@
                     globalContainer.add(mesh)
                     slides.push(mesh);
                 }
+
+                var loader = new THREE.OBJLoader();
+                loader.setPath('assets/models/');
+                loader.load('monkey.obj', function (object) {
+                    scene.add(object)
+                    object.children[0].material=material;
+                    object.position.y=1;
+                });
 
                 animate()
             }
