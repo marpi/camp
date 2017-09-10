@@ -43,7 +43,6 @@
             var mobile = false;
             var vr = false;
             var max = 40;
-            var material;
 
             var objects = [];
 
@@ -63,7 +62,6 @@
                 renderer = new THREE.WebGLRenderer({antialias: true});
                 renderer.setPixelRatio(window.devicePixelRatio);
                 renderer.setSize(window.innerWidth, window.innerHeight);
-                renderer.shadowMap.enabled = true;
                 document.body.appendChild(renderer.domElement);
 
                 // scene
@@ -87,7 +85,7 @@
             }
 
             function setup() {
-                var cubeMap = getCubeMap(0);
+                var cubeMap = getCubeMap(13);
 
                 var cubeShader = THREE.ShaderLib['cube'];
                 cubeShader.uniforms['tCube'].value = cubeMap;
@@ -107,50 +105,31 @@
                 // lights
 
                 light = new THREE.DirectionalLight(0xFFFFFF);
-                light.position.set(.1, 1, .2);
-                light.castShadow = true;
-                //directionalLight.shadowDarkness = .1
-                var roz = 2
-                light.shadow.camera.near = -roz * 2
-                light.shadow.camera.far = roz * 2
-                light.shadow.camera.left = -roz * 2
-                light.shadow.camera.right = roz * 2
-                light.shadow.camera.top = roz
-                light.shadow.camera.bottom = -roz
-                light.shadow.mapSize.width = 1024;
-                light.shadow.mapSize.height = 1024;
-                light.shadow.bias = -0.0002
+                light.position.set(.2, .1, .2);
                 scene.add(light);
 
                 // objects
 
-                material = new THREE.MeshStandardMaterial({
+                var material = new THREE.MeshStandardMaterial({
                     //color:0xFF0000,
                     metalness: 1,
-                    roughness: .5,
+                    roughness: 0,
                     envMap: cubeMap,
                     shading: THREE.FlatShading
                 });//shading: THREE.FlatShading
 
                 var container = new THREE.Group();
-                for (var i = 0; i < 199; i++) {
+                for (var i = 0; i < 10000; i++) {
                     var geo = new THREE.TetrahedronGeometry(.1, Math.floor(Math.random() * 3));
                     var mesh = new THREE.Mesh(geo, material);
-                    mesh.position.x = -1 + Math.random() * 2;
-                    mesh.position.y = -1 + Math.random() * 2;
-                    mesh.position.z = -1 + Math.random() * 2;
-                    var s = Math.random() * 2
-                    mesh.scale.set(s, s, s)
+                    mesh.position.x = -6 + Math.random() * 12;
+                    mesh.position.y = -6 + Math.random() * 12;
+                    mesh.position.z = -6 + Math.random() * 12;
+                    var s=Math.random()*2
+                    mesh.scale.set(s,s,s)
                     mesh.rotation.set(Math.random() * 4, Math.random() * 4, Math.random() * 4)
                     container.add(mesh);
                 }
-
-                var geo = new THREE.TetrahedronGeometry(.1, Math.floor(Math.random() * 3));
-                var mesh = new THREE.Mesh(geo, material);
-                mesh.position.y = -1;
-                mesh.scale.set(15, 15 / 10, 15)
-                container.add(mesh);
-
                 var geom = new THREE.Geometry();
                 for (var i = 0; i < container.children.length; i++) {
                     container.children[i].updateMatrix();
@@ -158,18 +137,16 @@
                 }
 
                 container = new THREE.Mesh(geom, material);
-                container.castShadow = true;
-                container.receiveShadow = true;
                 scene.add(container)
             }
 
 
             function render() {
-                var time = Date.now() * 0.0001;
+                var time = Date.now() * 0.001;
 
 
-                light.position.x = Math.sin(time);
-                light.position.z = Math.cos(time);
+                //light.position.x = Math.sin(time*10);
+                //light.position.z = Math.cos(10*time);
 
                 /*audio.frequencyData = audio.update();
                  
