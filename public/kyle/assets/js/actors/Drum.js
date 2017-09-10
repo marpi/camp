@@ -67,7 +67,6 @@ export default class Drum extends Actor {
 	addEvents() {
 		this.event = {};
 		if (WEBVR.isAvailable() === true) {
-			console.log('add trigger listeners');
 			this.opts.controller1.addEventListener('triggerdown', this.onTriggerDown.bind(this));
 			this.opts.controller2.addEventListener('triggerdown', this.onTriggerDown.bind(this));
 
@@ -100,7 +99,8 @@ export default class Drum extends Actor {
 	}
 
 	onTriggerDown(evt) {
-		console.log('trigger', evt);
+		console.log('trigger', evt.target.position);
+		console.log('dist', this.shapes[0].position.distanceTo(evt.target.position));
 		this.interact3d(evt.target.position);
 	}
 	onTriggerUp() {
@@ -159,10 +159,29 @@ export default class Drum extends Actor {
 
 	interact3d(pos) {
 		let dist = pos.distanceTo(this.shapes[0].position);
+		console.log('dist', dist);
 		if (dist < 0.6) {
 			this.audio.playMedia(this.opts.sound || '');
 			this.setMaterial(this.shapes[0], this.opts.color);
 		}
+		else {
+			let debug = this.debug(pos);
+			this.shapes.push()
+		}
+	}
+
+	debug(pos) {
+		var geometry = new THREE.BoxGeometry( 0.1, 0.1, 0.1);
+		var material = new THREE.MeshPhongMaterial({ shading: 0xFFFFFF });
+		var debug = new THREE.Mesh( geometry, material );
+
+		debug.position.set(
+			pos.x,
+			pos.y,
+			pos.z
+		);
+
+	    this.shapes.push(cylinder);
 	}
 
 	stopInteract() {
@@ -172,7 +191,5 @@ export default class Drum extends Actor {
 	setMaterial(shape, hex) {
 		shape.material.color.setHex( hex );
 	}
-
-
 
 }

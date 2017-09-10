@@ -473,7 +473,6 @@ var Drum = function (_Actor) {
 		value: function addEvents() {
 			this.event = {};
 			if (WEBVR.isAvailable() === true) {
-				console.log('add trigger listeners');
 				this.opts.controller1.addEventListener('triggerdown', this.onTriggerDown.bind(this));
 				this.opts.controller2.addEventListener('triggerdown', this.onTriggerDown.bind(this));
 
@@ -508,7 +507,8 @@ var Drum = function (_Actor) {
 	}, {
 		key: 'onTriggerDown',
 		value: function onTriggerDown(evt) {
-			console.log('trigger', evt);
+			console.log('trigger', evt.target.position);
+			console.log('dist', this.shapes[0].position.distanceTo(evt.target.position));
 			this.interact3d(evt.target.position);
 		}
 	}, {
@@ -581,10 +581,25 @@ var Drum = function (_Actor) {
 		key: 'interact3d',
 		value: function interact3d(pos) {
 			var dist = pos.distanceTo(this.shapes[0].position);
+			console.log('dist', dist);
 			if (dist < 0.6) {
 				this.audio.playMedia(this.opts.sound || '');
 				this.setMaterial(this.shapes[0], this.opts.color);
+			} else {
+				var debug = this.debug(pos);
+				this.shapes.push();
 			}
+		}
+	}, {
+		key: 'debug',
+		value: function debug(pos) {
+			var geometry = new THREE.BoxGeometry(0.1, 0.1, 0.1);
+			var material = new THREE.MeshPhongMaterial({ shading: 0xFFFFFF });
+			var debug = new THREE.Mesh(geometry, material);
+
+			debug.position.set(pos.x, pos.y, pos.z);
+
+			this.shapes.push(cylinder);
 		}
 	}, {
 		key: 'stopInteract',
