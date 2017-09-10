@@ -41,7 +41,10 @@ function controller1Down() {
 
     var geo = new THREE.TetrahedronGeometry(.1, Math.floor(Math.random() * 3));
     var mesh = new THREE.Mesh(geo, material);
-    mesh.position.copy(controller1.position)
+    //mesh.position.copy(controller1.position)
+    mesh.matrix.copy(controller1.matrix);
+    mesh.matrixAutoUpdate = false;
+    mesh.matrixWorldNeedsUpdate = true;
     //mesh.scale.set(15, 15 / 10, 15)
     scene.add(mesh);
 }
@@ -51,7 +54,10 @@ function controller2Down() {
 
     var geo = new THREE.TetrahedronGeometry(.1, Math.floor(Math.random() * 3));
     var mesh = new THREE.Mesh(geo, material);
-    mesh.position.copy(controller2.position)
+    //mesh.position.copy(controller2.position)
+    mesh.matrix.copy(controller1.matrix);
+    mesh.matrixAutoUpdate = false;
+    mesh.matrixWorldNeedsUpdate = true;
     //mesh.scale.set(15, 15 / 10, 15)
     scene.add(mesh);
 }
