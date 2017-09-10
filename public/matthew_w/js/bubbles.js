@@ -147,7 +147,9 @@ function render() {
         controller1.update();
         controller2.update();
         effect.requestAnimationFrame(render);
+        camera.position.y -= 1.5;
         effect.render(scene, camera);
+        camera.position.y += 1.5;
         return;
     }
 
