@@ -5,6 +5,8 @@ var vr = false;
 var audio = new AudioReactive({});
 var useLights = false;
 
+var container = new THREE.Group();
+
 function init() {
 
     // renderer
@@ -81,14 +83,16 @@ function setup() {
     // scene.add(mesh);
 
     for(var i = 0; i<5; i++) {
-    generateBubble(4+Math.random()*7,new THREE.Vector3(polarNoise()*range,polarNoise()*range,polarNoise()*range));
+    generateBubble(0.3,new THREE.Vector3(polarNoise()*range,polarNoise()*range,polarNoise()*range));
     }
+
+    scene.add(container);
 
 }
 
 let bubbles = [];
 
-let range = 100;
+let range = 2;
 
 function polarNoise() {
     return 1 - Math.random();
@@ -108,8 +112,8 @@ function generateBubble (scale, position) {
     innerBubble.position.set(position.x, position.y, position.z);
     outerBubble.position.set(position.x, position.y, position.z);
 
-        scene.add(outerBubble);
-        scene.add(innerBubble);
+        container.add(outerBubble);
+        container.add(innerBubble);
 
 }
 
