@@ -139,8 +139,8 @@ function getCubeMap(i) {
  
  var geom = new THREE.Geometry()
  for (var i = 0; i < container.children.length; i++) {
- container.children[i].updateMatrix();
- geom.merge(container.children[i].geometry, container.children[i].matrix);
+     container.children[i].updateMatrix();
+     geom.merge(container.children[i].geometry, container.children[i].matrix);
  }
  container = new THREE.Mesh(geom, mat);
  
@@ -154,11 +154,11 @@ function getCubeMap(i) {
  cubeShader.uniforms['tCube'].value = getCubeMap(10);
  
  var skyBoxMaterial = new THREE.ShaderMaterial({
- fragmentShader: cubeShader.fragmentShader,
- vertexShader: cubeShader.vertexShader,
- uniforms: cubeShader.uniforms,
- depthWrite: false,
- side: THREE.BackSide
+     fragmentShader: cubeShader.fragmentShader,
+     vertexShader: cubeShader.vertexShader,
+     uniforms: cubeShader.uniforms,
+     depthWrite: false,
+     side: THREE.BackSide
  });
  
  var skyBox = new THREE.Mesh(new THREE.CubeGeometry(100, 100, 100),skyBoxMaterial);
@@ -202,9 +202,9 @@ function getCubeMap(i) {
 
 /*
  var loader = new THREE.OBJLoader();
- loader.setPath('assets/models/');
- loader.load('monkey.obj', function (object) {
- scene.add(object)
+     loader.setPath('assets/models/');
+     loader.load('monkey.obj', function (object) {
+     scene.add(object)
  });
  */
 
