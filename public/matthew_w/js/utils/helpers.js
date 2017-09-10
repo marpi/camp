@@ -6,10 +6,12 @@ function addEvents() {
 
         controller1 = new THREE.ViveController(0);
         controller1.standingMatrix = vrControls.getStandingMatrix();
+        controller1.addEventListener('triggerdown', controller1Down, false)
         controller1.castShadow = true;
         scene.add(controller1);
         controller2 = new THREE.ViveController(1);
         controller2.standingMatrix = vrControls.getStandingMatrix();
+        controller1.addEventListener('triggerdown', controller2Down, false)
         controller2.castShadow = true;
         scene.add(controller2);
         var loader = new THREE.OBJLoader();
@@ -33,6 +35,14 @@ function addEvents() {
         //vr = renderer.isPresenting
     }, false);
 }
+
+function controller1Down(e){
+    console.log(e);
+    }
+    
+    function controller2Down(e) {
+        console.log(e);
+    }
 
 function toggleVR(enabled) {
     vr = enabled;
@@ -133,6 +143,8 @@ function getCubeMap(i) {
 
     return cubeMap;
 }
+
+
 
 /*
  * 
