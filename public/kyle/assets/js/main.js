@@ -1,5 +1,6 @@
 import {Position} from './utils';
 import Drum from './actors/Drum';
+import Skybox from './actors/Skybox';
 
 var camera, scene, renderer, effect, controls, vrControls, light;
 var controller1, controller2;
@@ -22,8 +23,8 @@ function init() {
     scene = new THREE.Scene();
 
     // camera
-    camera = new THREE.PerspectiveCamera(30, window.innerWidth / window.innerHeight, 0.1, 10000);
-    camera.position.set(0, 3, 5);
+    camera = new THREE.PerspectiveCamera(90, window.innerWidth / window.innerHeight, 0.1, 10000);
+    camera.position.set(0, 1.5, 2);
 
     // controls
     controls = new THREE.OrbitControls(camera);
@@ -40,30 +41,37 @@ function setup() {
     light = new THREE.DirectionalLight(0xffffff);
     light.position.set(0,1,5);
     scene.add(light);
+
+    var cubeMap = getCubeMap(4);
+    var skybox = new Skybox({scene,renderer, camera}, {cubeMap});
     
     // objects
     var drum1 = new Drum({scene, renderer, camera}, {
         position: new Position(-0.5, 0, 0),
         sound: 'assets/sound/highhat',
-        color: 0xffffff
+        color: 0xff0000,
+        keyCode: 83
     });
 
     var drum2 = new Drum({scene, renderer, camera}, {
         position: new Position(0.5, 0, 0),
         sound: 'assets/sound/low',
-        color: 0xffffff
+        color: 0x00ff00,
+        keyCode: 68
     });
 
     var drum3 = new Drum({scene, renderer, camera}, {
         position: new Position(1.25, 0, 0.75),
         sound: 'assets/sound/high',
-        color: 0xffffff
+        color: 0x0000ff,
+        keyCode: 70
     });
 
     var drum4 = new Drum({scene, renderer, camera}, {
         position: new Position(-1.25, 0, 0.75),
         sound: 'assets/sound/snare',
-        color: 0xffffff
+        color: 0xffff00,
+        keyCode: 65
     });
 }
 

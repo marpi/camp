@@ -25,23 +25,24 @@
     }
 
     AudioReactiveMediaPlayer.prototype.play = function (src) {
-
-        if (typeof src === 'string') {
-            this.element.src = src;
-            if (this.element.canPlayType('audio/mpeg;')) {
-                //this.element.type = 'audio/mpeg';
-                this.element.src = src+'.mp3';
+        try {
+            if (typeof src === 'string') {
+                this.element.src = src;
+                if (this.element.canPlayType('audio/mpeg;')) {
+                    //this.element.type = 'audio/mpeg';
+                    this.element.src = src+'.mp3';
+                } else {
+                    //this.element.type = 'audio/ogg';
+                    this.element.src = src+'.ogg';
+                }
+                this.element.play();
+                this.audioSource = this.audio.context.createMediaElementSource(this.element);
             } else {
-                //this.element.type = 'audio/ogg';
-                this.element.src = src+'.ogg';
+                this.audioSource = this.audio.context.createMediaElementSource(src);
             }
-            this.element.play();
-            this.audioSource = this.audio.context.createMediaElementSource(this.element);
-        } else {
-            this.audioSource = this.audio.context.createMediaElementSource(src);
-        }
-        this.audioSource.connect(this.audio.analyser);
-        this.audioSource.connect(this.audio.context.destination);
+            this.audioSource.connect(this.audio.analyser);
+            this.audioSource.connect(this.audio.context.destination);
+        } catch(e) {}
 
     }
 

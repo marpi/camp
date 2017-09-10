@@ -77,7 +77,9 @@ module.exports = __webpack_require__(1);
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__utils__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__actors_Drum__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__actors_Drum__ = __webpack_require__(4);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__actors_Skybox__ = __webpack_require__(6);
+
 
 
 
@@ -102,8 +104,8 @@ function init() {
     scene = new THREE.Scene();
 
     // camera
-    camera = new THREE.PerspectiveCamera(30, window.innerWidth / window.innerHeight, 0.1, 10000);
-    camera.position.set(0, 3, 5);
+    camera = new THREE.PerspectiveCamera(90, window.innerWidth / window.innerHeight, 0.1, 10000);
+    camera.position.set(0, 1.5, 2);
 
     // controls
     controls = new THREE.OrbitControls(camera);
@@ -120,29 +122,36 @@ function setup() {
     light.position.set(0, 1, 5);
     scene.add(light);
 
+    var cubeMap = getCubeMap(4);
+    var skybox = new __WEBPACK_IMPORTED_MODULE_2__actors_Skybox__["a" /* default */]({ scene: scene, renderer: renderer, camera: camera }, { cubeMap: cubeMap });
+
     // objects
     var drum1 = new __WEBPACK_IMPORTED_MODULE_1__actors_Drum__["a" /* default */]({ scene: scene, renderer: renderer, camera: camera }, {
         position: new __WEBPACK_IMPORTED_MODULE_0__utils__["a" /* Position */](-0.5, 0, 0),
         sound: 'assets/sound/highhat',
-        color: 0xffffff
+        color: 0xff0000,
+        keyCode: 83
     });
 
     var drum2 = new __WEBPACK_IMPORTED_MODULE_1__actors_Drum__["a" /* default */]({ scene: scene, renderer: renderer, camera: camera }, {
         position: new __WEBPACK_IMPORTED_MODULE_0__utils__["a" /* Position */](0.5, 0, 0),
         sound: 'assets/sound/low',
-        color: 0xffffff
+        color: 0x00ff00,
+        keyCode: 68
     });
 
     var drum3 = new __WEBPACK_IMPORTED_MODULE_1__actors_Drum__["a" /* default */]({ scene: scene, renderer: renderer, camera: camera }, {
         position: new __WEBPACK_IMPORTED_MODULE_0__utils__["a" /* Position */](1.25, 0, 0.75),
         sound: 'assets/sound/high',
-        color: 0xffffff
+        color: 0x0000ff,
+        keyCode: 70
     });
 
     var drum4 = new __WEBPACK_IMPORTED_MODULE_1__actors_Drum__["a" /* default */]({ scene: scene, renderer: renderer, camera: camera }, {
         position: new __WEBPACK_IMPORTED_MODULE_0__utils__["a" /* Position */](-1.25, 0, 0.75),
         sound: 'assets/sound/snare',
-        color: 0xffffff
+        color: 0xffff00,
+        keyCode: 65
     });
 }
 
@@ -316,12 +325,11 @@ var Position = function Position(x, y, z) {
 /* harmony default export */ __webpack_exports__["a"] = (Position);
 
 /***/ }),
-/* 4 */,
-/* 5 */
+/* 4 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Actor__ = __webpack_require__(6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Actor__ = __webpack_require__(5);
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -349,13 +357,47 @@ var Drum = function (_Actor) {
 	_createClass(Drum, [{
 		key: 'shape',
 		value: function shape() {
+			if (!this.visualizers) this.visualizers = [];
 			this.container();
+			this.visualizer();
+		}
+	}, {
+		key: 'watchAudio',
+		value: function watchAudio() {
+			if (this.audio) {
+				this.audio.update();
+				this.visualize();
+				requestAnimationFrame(this.watchAudio.bind(this));
+			}
+		}
+	}, {
+		key: 'visualize',
+		value: function visualize() {
+			for (var i = 0; i < this.visualizers.length; i++) {
+				var s = 5 * this.audio.frequencies[i] / 16;
+				s = s > 0 ? s : 0.0001;
+				this.visualizers[i].scale.set(s, s, s);
+			}
+		}
+	}, {
+		key: 'visualizer',
+		value: function visualizer() {
+			for (var i = 0; i < 256; i++) {
+				var geometry = new THREE.BoxGeometry(0.005, 0.005, 0.005);
+				var material = new THREE.MeshBasicMaterial({ color: this.opts.color });
+				var box = new THREE.Mesh(geometry, material);
+
+				box.position.set(this.opts.position.x, this.opts.position.y + 0.1 * i, this.opts.position.z - 1);
+
+				this.visualizers.push(box);
+				this.shapes.push(box);
+			}
 		}
 	}, {
 		key: 'container',
 		value: function container() {
 			var geometry = new THREE.CylinderGeometry(0.4, 0.3, 1, 128);
-			var material = new THREE.MeshPhongMaterial({ shading: 0xffffff });
+			var material = new THREE.MeshPhongMaterial({ shading: 0xFFFFFF });
 			var cylinder = new THREE.Mesh(geometry, material);
 
 			cylinder.position.set(this.opts.position.x, this.opts.position.y, this.opts.position.z);
@@ -366,6 +408,7 @@ var Drum = function (_Actor) {
 		key: 'addEvents',
 		value: function addEvents() {
 			this.event = {};
+			document.addEventListener('keydown', this.onKeyDown.bind(this));
 			document.addEventListener('mousedown', this.onMouseDown.bind(this));
 			document.addEventListener('touchstart', this.onTouchStart.bind(this));
 		}
@@ -373,6 +416,28 @@ var Drum = function (_Actor) {
 		key: 'sound',
 		value: function sound() {
 			this.audio = new AudioReactive({});
+			this.watchAudio();
+		}
+	}, {
+		key: 'onKeyDown',
+		value: function onKeyDown(evt) {
+			if (evt.keyCode === this.opts.keyCode) {
+				try {
+					this.audio.playMedia(this.opts.sound || '');
+				} catch (e) {
+					console.error(e);
+				}
+				this.setMaterial(this.shapes[0], this.opts.color);
+			}
+
+			this.release = this.onKeyUp.bind(this);
+			document.addEventListener('keyup', this.release);
+		}
+	}, {
+		key: 'onKeyUp',
+		value: function onKeyUp() {
+			document.removeEventListener('keyup', this.release);
+			this.stopInteract();
 		}
 	}, {
 		key: 'onMouseDown',
@@ -401,11 +466,13 @@ var Drum = function (_Actor) {
 	}, {
 		key: 'onMouseUp',
 		value: function onMouseUp() {
+			document.removeEventListener('mouseup', this.release);
 			this.stopInteract();
 		}
 	}, {
 		key: 'onTouchEnd',
 		value: function onTouchEnd() {
+			document.removeEventListener('touchend', this.release);
 			this.onMouseUp();
 		}
 	}, {
@@ -415,24 +482,22 @@ var Drum = function (_Actor) {
 
 			this.raycaster.setFromCamera(this.event, this.camera);
 
-			var intersects = this.raycaster.intersectObjects(this.shapes);
+			var intersects = this.raycaster.intersectObjects([this.shapes[0]]);
 			if (intersects.length > 0) {
 				try {
 					this.audio.playMedia(this.opts.sound || '');
-				} catch (e) {}
+				} catch (e) {
+					console.error(e);
+				}
 				intersects.forEach(function (intersect) {
-					return _this2.setMaterial(intersect.object, 0xffaaaa);
+					return _this2.setMaterial(intersect.object, _this2.opts.color);
 				});
 			}
 		}
 	}, {
 		key: 'stopInteract',
 		value: function stopInteract() {
-			var _this3 = this;
-
-			this.shapes.forEach(function (shape) {
-				return _this3.setMaterial(shape, 0xffffff);
-			});
+			this.setMaterial(this.shapes[0], 0xffffff);
 			document.removeEventListener('touchend', this.release);
 			document.removeEventListener('mouseup', this.release);
 		}
@@ -449,7 +514,7 @@ var Drum = function (_Actor) {
 /* harmony default export */ __webpack_exports__["a"] = (Drum);
 
 /***/ }),
-/* 6 */
+/* 5 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -493,6 +558,53 @@ var Actor = function () {
 }();
 
 /* harmony default export */ __webpack_exports__["a"] = (Actor);
+
+/***/ }),
+/* 6 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Actor__ = __webpack_require__(5);
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+
+
+var Skybox = function (_Actor) {
+    _inherits(Skybox, _Actor);
+
+    function Skybox() {
+        _classCallCheck(this, Skybox);
+
+        return _possibleConstructorReturn(this, (Skybox.__proto__ || Object.getPrototypeOf(Skybox)).apply(this, arguments));
+    }
+
+    _createClass(Skybox, [{
+        key: 'shape',
+        value: function shape() {
+            var cubeShader = THREE.ShaderLib['cube'];
+            cubeShader.uniforms['tCube'].value = this.opts.cubeMap;
+            var skyBoxMaterial = new THREE.ShaderMaterial({
+                fragmentShader: cubeShader.fragmentShader,
+                vertexShader: cubeShader.vertexShader,
+                uniforms: cubeShader.uniforms,
+                depthWrite: false,
+                side: THREE.BackSide
+            });
+            var skyBox = new THREE.Mesh(new THREE.CubeGeometry(1000, 1000, 1000), skyBoxMaterial);
+            this.shapes.push(skyBox);
+        }
+    }]);
+
+    return Skybox;
+}(__WEBPACK_IMPORTED_MODULE_0__Actor__["a" /* default */]);
+
+/* harmony default export */ __webpack_exports__["a"] = (Skybox);
 
 /***/ })
 /******/ ]);
