@@ -23,8 +23,8 @@ function init() {
     scene = new THREE.Scene();
 
     // camera
-    camera = new THREE.PerspectiveCamera(90, window.innerWidth / window.innerHeight, 0.1, 10000);
-    camera.position.set(0, 1.5, 2);
+    camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.1, 10000);
+    camera.position.set(0, 1.5, 3.5);
 
     // controls
     controls = new THREE.OrbitControls(camera);
@@ -46,32 +46,38 @@ function setup() {
     var skybox = new Skybox({scene,renderer, camera}, {cubeMap});
     
     // objects
-    var drum1 = new Drum({scene, renderer, camera}, {
-        position: new Position(-0.5, 0, 0),
-        sound: 'assets/sound/highhat',
-        color: 0xff0000,
-        keyCode: 83
-    });
-
-    var drum2 = new Drum({scene, renderer, camera}, {
-        position: new Position(0.5, 0, 0),
-        sound: 'assets/sound/low',
-        color: 0x00ff00,
-        keyCode: 68
-    });
-
-    var drum3 = new Drum({scene, renderer, camera}, {
-        position: new Position(1.25, 0, 0.75),
-        sound: 'assets/sound/high',
-        color: 0x0000ff,
+    var snare = new Drum({scene, renderer, camera}, {
+        position: new Position(-1, 0, 0.5),
+        sound: 'assets/sound/snare',
+        color: 0xffff00,
         keyCode: 70
     });
 
-    var drum4 = new Drum({scene, renderer, camera}, {
-        position: new Position(-1.25, 0, 0.75),
-        sound: 'assets/sound/snare',
-        color: 0xffff00,
-        keyCode: 65
+    var highhat = new Drum({scene, renderer, camera}, {
+        position: new Position(1, 0, 0.5),
+        sound: 'assets/sound/highhat',
+        color: 0xff0000,
+        keyCode: 74
+    });
+    var bass = new Drum({scene, renderer, camera}, {
+        position: new Position(0, 0, 0),
+        sound: 'assets/sound/bass',
+        color: 0x00ffff,
+        keyCode: 32
+    });
+
+    var china = new Drum({scene, renderer, camera}, {
+        position: new Position(1.75, 0, 1.25),
+        sound: 'assets/sound/china',
+        color: 0x00ff00,
+        keyCode: 85
+    });
+
+    var crash = new Drum({scene, renderer, camera}, {
+        position: new Position(-1.75, 0, 1.25), //
+        sound: 'assets/sound/crash',
+        color: 0x0000ff,
+        keyCode: 82
     });
 }
 

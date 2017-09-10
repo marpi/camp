@@ -60,24 +60,70 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 0);
+/******/ 	return __webpack_require__(__webpack_require__.s = 1);
 /******/ })
 /************************************************************************/
 /******/ ([
 /* 0 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
-module.exports = __webpack_require__(1);
+"use strict";
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Actor = function () {
+	function Actor(_ref, opts) {
+		var scene = _ref.scene,
+		    renderer = _ref.renderer,
+		    camera = _ref.camera;
+
+		_classCallCheck(this, Actor);
+
+		this.scene = scene;
+		this.renderer = renderer;
+		this.camera = camera;
+		this.opts = opts || {};
+		this.shapes = [];
+		this.draw();
+		return this;
+	}
+
+	_createClass(Actor, [{
+		key: "shape",
+		value: function shape() {}
+	}, {
+		key: "draw",
+		value: function draw() {
+			var _this = this;
+
+			this.shape();
+			this.shapes.forEach(function (shape) {
+				return _this.scene.add(shape);
+			});
+		}
+	}]);
+
+	return Actor;
+}();
+
+/* harmony default export */ __webpack_exports__["a"] = (Actor);
 
 /***/ }),
 /* 1 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__(2);
+
+
+/***/ }),
+/* 2 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__utils__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__actors_Drum__ = __webpack_require__(4);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__utils__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__actors_Drum__ = __webpack_require__(5);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__actors_Skybox__ = __webpack_require__(6);
 
 
@@ -104,8 +150,8 @@ function init() {
     scene = new THREE.Scene();
 
     // camera
-    camera = new THREE.PerspectiveCamera(90, window.innerWidth / window.innerHeight, 0.1, 10000);
-    camera.position.set(0, 1.5, 2);
+    camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.1, 10000);
+    camera.position.set(0, 1.5, 3.5);
 
     // controls
     controls = new THREE.OrbitControls(camera);
@@ -126,32 +172,38 @@ function setup() {
     var skybox = new __WEBPACK_IMPORTED_MODULE_2__actors_Skybox__["a" /* default */]({ scene: scene, renderer: renderer, camera: camera }, { cubeMap: cubeMap });
 
     // objects
-    var drum1 = new __WEBPACK_IMPORTED_MODULE_1__actors_Drum__["a" /* default */]({ scene: scene, renderer: renderer, camera: camera }, {
-        position: new __WEBPACK_IMPORTED_MODULE_0__utils__["a" /* Position */](-0.5, 0, 0),
-        sound: 'assets/sound/highhat',
-        color: 0xff0000,
-        keyCode: 83
-    });
-
-    var drum2 = new __WEBPACK_IMPORTED_MODULE_1__actors_Drum__["a" /* default */]({ scene: scene, renderer: renderer, camera: camera }, {
-        position: new __WEBPACK_IMPORTED_MODULE_0__utils__["a" /* Position */](0.5, 0, 0),
-        sound: 'assets/sound/low',
-        color: 0x00ff00,
-        keyCode: 68
-    });
-
-    var drum3 = new __WEBPACK_IMPORTED_MODULE_1__actors_Drum__["a" /* default */]({ scene: scene, renderer: renderer, camera: camera }, {
-        position: new __WEBPACK_IMPORTED_MODULE_0__utils__["a" /* Position */](1.25, 0, 0.75),
-        sound: 'assets/sound/high',
-        color: 0x0000ff,
+    var snare = new __WEBPACK_IMPORTED_MODULE_1__actors_Drum__["a" /* default */]({ scene: scene, renderer: renderer, camera: camera }, {
+        position: new __WEBPACK_IMPORTED_MODULE_0__utils__["a" /* Position */](-1, 0, 0.5),
+        sound: 'assets/sound/snare',
+        color: 0xffff00,
         keyCode: 70
     });
 
-    var drum4 = new __WEBPACK_IMPORTED_MODULE_1__actors_Drum__["a" /* default */]({ scene: scene, renderer: renderer, camera: camera }, {
-        position: new __WEBPACK_IMPORTED_MODULE_0__utils__["a" /* Position */](-1.25, 0, 0.75),
-        sound: 'assets/sound/snare',
-        color: 0xffff00,
-        keyCode: 65
+    var highhat = new __WEBPACK_IMPORTED_MODULE_1__actors_Drum__["a" /* default */]({ scene: scene, renderer: renderer, camera: camera }, {
+        position: new __WEBPACK_IMPORTED_MODULE_0__utils__["a" /* Position */](1, 0, 0.5),
+        sound: 'assets/sound/highhat',
+        color: 0xff0000,
+        keyCode: 74
+    });
+    var bass = new __WEBPACK_IMPORTED_MODULE_1__actors_Drum__["a" /* default */]({ scene: scene, renderer: renderer, camera: camera }, {
+        position: new __WEBPACK_IMPORTED_MODULE_0__utils__["a" /* Position */](0, 0, 0),
+        sound: 'assets/sound/bass',
+        color: 0x00ffff,
+        keyCode: 32
+    });
+
+    var china = new __WEBPACK_IMPORTED_MODULE_1__actors_Drum__["a" /* default */]({ scene: scene, renderer: renderer, camera: camera }, {
+        position: new __WEBPACK_IMPORTED_MODULE_0__utils__["a" /* Position */](1.75, 0, 1.25),
+        sound: 'assets/sound/china',
+        color: 0x00ff00,
+        keyCode: 85
+    });
+
+    var crash = new __WEBPACK_IMPORTED_MODULE_1__actors_Drum__["a" /* default */]({ scene: scene, renderer: renderer, camera: camera }, {
+        position: new __WEBPACK_IMPORTED_MODULE_0__utils__["a" /* Position */](-1.75, 0, 1.25), //
+        sound: 'assets/sound/crash',
+        color: 0x0000ff,
+        keyCode: 82
     });
 }
 
@@ -297,17 +349,17 @@ function getCubeMap(i) {
 }
 
 /***/ }),
-/* 2 */
+/* 3 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Position__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Position__ = __webpack_require__(4);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return __WEBPACK_IMPORTED_MODULE_0__Position__["a"]; });
 
 
 
 /***/ }),
-/* 3 */
+/* 4 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -325,11 +377,11 @@ var Position = function Position(x, y, z) {
 /* harmony default export */ __webpack_exports__["a"] = (Position);
 
 /***/ }),
-/* 4 */
+/* 5 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Actor__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Actor__ = __webpack_require__(0);
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -514,57 +566,11 @@ var Drum = function (_Actor) {
 /* harmony default export */ __webpack_exports__["a"] = (Drum);
 
 /***/ }),
-/* 5 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var Actor = function () {
-	function Actor(_ref, opts) {
-		var scene = _ref.scene,
-		    renderer = _ref.renderer,
-		    camera = _ref.camera;
-
-		_classCallCheck(this, Actor);
-
-		this.scene = scene;
-		this.renderer = renderer;
-		this.camera = camera;
-		this.opts = opts || {};
-		this.shapes = [];
-		this.draw();
-		return this;
-	}
-
-	_createClass(Actor, [{
-		key: "shape",
-		value: function shape() {}
-	}, {
-		key: "draw",
-		value: function draw() {
-			var _this = this;
-
-			this.shape();
-			this.shapes.forEach(function (shape) {
-				return _this.scene.add(shape);
-			});
-		}
-	}]);
-
-	return Actor;
-}();
-
-/* harmony default export */ __webpack_exports__["a"] = (Actor);
-
-/***/ }),
 /* 6 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Actor__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Actor__ = __webpack_require__(0);
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
