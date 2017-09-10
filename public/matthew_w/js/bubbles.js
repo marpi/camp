@@ -160,11 +160,11 @@ function setup() {
 
     var material = new THREE.MeshBasicMaterial({shading: THREE.FlatShading, envMap: getCubeMap(cubeMap)});
 
-    for(var i = 0; i<5; i++) {
-        var pos = new THREE.Vector3(polarNoise()*range,Math.random()*(range/2),polarNoise()*range);
-        bubbleAt(0.3, pos);
-    //generateDiamonds(0.1,new THREE.Vector3(polarNoise()*range,polarNoise()*range,polarNoise()*range), material);
-    }
+    // for(var i = 0; i<5; i++) {
+    //     var pos = new THREE.Vector3(polarNoise()*range,Math.random()*(range/2),polarNoise()*range);
+    //     bubbleAt(0.3, pos);
+    // //generateDiamonds(0.1,new THREE.Vector3(polarNoise()*range,polarNoise()*range,polarNoise()*range), material);
+    // }
 
     scene.add(container);
 
