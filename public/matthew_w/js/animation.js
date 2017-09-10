@@ -72,7 +72,7 @@ function setup() {
     
     var skyBox = new THREE.Mesh(new THREE.CubeGeometry(200, 200, 200),skyBoxMaterial);
     
-    //scene.add(skyBox);
+    scene.add(skyBox);
 
     // objects
 
@@ -82,33 +82,30 @@ function setup() {
     // var mesh = new THREE.Mesh(geo, material);
     // scene.add(mesh);
 
-    var material = new THREE.MeshPhysicalMaterial({
-        metalness: 1, 
-        roughness: 0.4, 
-        shading: THREE.FlatShading, 
-        envMap: getCubeMap(cubeMap)});
+    var material = new THREE.MeshBasicMaterial({shading: THREE.FlatShading, envMap: getCubeMap(cubeMap)});
 
-    for(var i = 0; i<10000; i++) {
+    for(var i = 0; i<10; i++) {
     //generateBubble(0.3,new THREE.Vector3(polarNoise()*range,polarNoise()*range,polarNoise()*range));
-    generateDiamonds(0.1,new THREE.Vector3(polarNoise()*range,polarNoise()*range,polarNoise()*range), material);
+    generateRubix(3,new THREE.Vector3(0,i*(3*0.1),0), material);
     }
 
-    var floor = new THREE.PlaneGeometry( 100, 100, 32 );
-    var floormesh = new THREE.Mesh(floor, material);
-    floormesh.position.y = -range;
-    floor.rotateX((-Math.PI / 180)*90);  
-    container.add(floormesh);
 
-    var geom = new THREE.Geometry();
-    for (var i = 0; i < container.children.length; i++) {
-        container.children[i].updateMatrix();
-        geom.merge(container.children[i].geometry, container.children[i].matrix);
-    }
 
-    container = new THREE.Mesh(geom, material);
+    animate();
 
     scene.add(container);
 
+}
+
+
+function animate() {
+    cube.forEach((slice, i)=>{
+        TweenLite.to(slice.rotation, 1,{
+            delay: 1 - .1 * i,
+            y: slice.rotation.y + Math.PI * 2 / cube.length
+        })
+    })
+    TweenLite.delayedCall(2, animate)
 }
 
 let bubbles = [];
@@ -119,34 +116,18 @@ function polarNoise() {
     return 0.5 - Math.random();
 }
 
+var cube = [];
 
-function generateDiamonds(scale, position, material)  {
-    
-    var geo = new THREE.IcosahedronGeometry( scale, 0 );
+
+function generateRubix(scale, position, material)  {
+    console.log(position.y)
+    var geo = new THREE.BoxGeometry( scale, scale*0.1, scale );
     var mesh = new THREE.Mesh(geo, material);
     mesh.position.set(position.x, position.y, position.z);
+    cube.push(mesh);
     container.add(mesh);
-    
 }
 
-function generateBubble (scale, position) {
-
-    let outergeometry = new THREE.SphereGeometry( scale, 32, 32 );
-    let innergeometry = new THREE.SphereGeometry( scale * 0.9, 32, 32 );
-
-    let outermaterial = new THREE.MeshBasicMaterial( {color: 0xffff00, envMap:getCubeMap(10)} );
-    let innermaterial = new THREE.MeshBasicMaterial( {color: 0xFFFFFF, envMap:getCubeMap(Math.floor(Math.random()*10)), side:THREE.BackSide} ); // 
-    
-    let innerBubble = new THREE.Mesh( innergeometry, innermaterial );
-    let outerBubble = new THREE.Mesh( outergeometry, outermaterial );
-
-    innerBubble.position.set(position.x, position.y, position.z);
-    outerBubble.position.set(position.x, position.y, position.z);
-
-        container.add(outerBubble);
-        container.add(innerBubble);
-
-}
 
 function render() {
     var time = Date.now() * 0.001;
@@ -178,9 +159,8 @@ function render() {
     controls.update();
     if (mobile) {
         camera.position.set(0, 0, 0);
-        camera.translateZ(Math.sin(time)*20);
+        camera.translateZ(40);
     }
-   // camera.translateZ(Math.sin(time)*5);
     renderer.render(scene, camera);
 }
 
