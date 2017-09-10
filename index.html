@@ -102,8 +102,14 @@
 
                 // objects
 
-                var material = new THREE.MeshBasicMaterial({envMap:cubeMap});//shading: THREE.FlatShading
-                var geo = new THREE.TorusKnotGeometry(2, .5);
+                var material = new THREE.MeshStandardMaterial({
+                    //color:0xFF0000,
+                    metalness:1,
+                    roughness:0.6,
+                    envMap:cubeMap,
+                    shading: THREE.FlatShading
+                });//shading: THREE.FlatShading
+                var geo = new THREE.TorusKnotGeometry(2, .5,64,7,2,10);
                 for (var i = 0; i < 1; i++) {
                     var mesh = new THREE.Mesh(geo, material);
                     scene.add(mesh);
