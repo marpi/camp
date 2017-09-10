@@ -43,7 +43,7 @@ function setup() {
     light.position.set(0,1,5);
     scene.add(light);
 
-    var cubeMap = getCubeMap(4);
+    var cubeMap = getCubeMap(5);
     var skybox = new Skybox({scene,renderer, camera}, {cubeMap});
     
     // objects

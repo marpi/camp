@@ -169,7 +169,7 @@ function setup() {
     light.position.set(0, 1, 5);
     scene.add(light);
 
-    var cubeMap = getCubeMap(4);
+    var cubeMap = getCubeMap(5);
     var skybox = new __WEBPACK_IMPORTED_MODULE_2__actors_Skybox__["a" /* default */]({ scene: scene, renderer: renderer, camera: camera }, { cubeMap: cubeMap });
 
     // objects
@@ -507,7 +507,6 @@ var Drum = function (_Actor) {
 	}, {
 		key: 'onMouseDown',
 		value: function onMouseDown(evt) {
-			console.log(evt);
 			evt.preventDefault();
 			this.event.x = event.clientX / this.renderer.domElement.clientWidth * 2 - 1;
 			this.event.y = -(event.clientY / this.renderer.domElement.clientHeight) * 2 + 1;
