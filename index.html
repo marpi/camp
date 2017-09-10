@@ -45,6 +45,7 @@
             var max = 40;
             var material;
             var container
+            var globalContainer
 
             var objects = [];
             var slides = []
@@ -134,13 +135,20 @@
                     shading: THREE.FlatShading
                 });//shading: THREE.FlatShading
 
+                globalContainer = new THREE.Group();
+                scene.add(globalContainer);
+
+                // gold diamonds
+
                 container = new THREE.Group();
                 for (var i = 0; i < 199; i++) {
                     var geo = new THREE.TetrahedronGeometry(.1, Math.floor(Math.random() * 3));
                     var mesh = new THREE.Mesh(geo, material);
-                    mesh.position.x = -2 + Math.random() * 4;
-                    mesh.position.y = -2 + Math.random() * 4;
-                    mesh.position.z = -2 + Math.random() * 4;
+                    while (mesh.position.distanceTo(scene.position) > 2 || mesh.position.distanceTo(scene.position) < 1.5 || mesh.position.x == 0 || mesh.position.y < -1) {
+                        mesh.position.x = -3 + Math.random() * 6;
+                        mesh.position.y = -3 + Math.random() * 6;
+                        mesh.position.z = -3 + Math.random() * 6;
+                    }
                     var s = Math.random() * 2
                     mesh.scale.set(s, s, s)
                     mesh.rotation.set(Math.random() * 4, Math.random() * 4, Math.random() * 4)
@@ -149,7 +157,7 @@
 
                 var geo = new THREE.TetrahedronGeometry(.1, 2);
                 var mesh = new THREE.Mesh(geo, material);
-                mesh.position.y = -1;
+                mesh.position.y = -1.5;
                 mesh.scale.set(15, 15 / 10, 15)
                 container.add(mesh);
 
@@ -162,8 +170,42 @@
                 container = new THREE.Mesh(geom, material);
                 container.castShadow = true;
                 container.receiveShadow = true;
-                scene.add(container)
+                globalContainer.add(container)
 
+
+                // black diamonds
+
+                var blackMaterial = new THREE.MeshStandardMaterial({
+                    //color:0xFF0000,
+                    metalness: 1,
+                    roughness: 0,
+                    envMap: getCubeMap(13),
+                    shading: THREE.FlatShading
+                });//shading: THREE.FlatShading
+
+                var container = new THREE.Group();
+                var geo = new THREE.TetrahedronGeometry(.1, 0);
+                for (var i = 0; i < 199; i++) {
+                    var mesh = new THREE.Mesh(geo, blackMaterial);
+                    while (mesh.position.distanceTo(scene.position) < 5) {
+                        mesh.position.x = -10 + Math.random() * 20;
+                        mesh.position.y = -10 + Math.random() * 20;
+                        mesh.position.z = -10 + Math.random() * 20;
+                    }
+                    var s = 5 + Math.random() * 10
+                    mesh.scale.set(s, s, s)
+                    mesh.rotation.set(Math.random() * 4, Math.random() * 4, Math.random() * 4)
+                    container.add(mesh);
+                }
+                var geom = new THREE.Geometry();
+                for (var i = 0; i < container.children.length; i++) {
+                    container.children[i].updateMatrix();
+                    geom.merge(container.children[i].geometry, container.children[i].matrix);
+                }
+                container = new THREE.Mesh(geom, blackMaterial);
+                container.castShadow = true;
+                container.receiveShadow = true;
+                globalContainer.add(container)
 
                 for (var i = 0; i < 10; i++) {
                     //var geo = new THREE.BoxGeometry(1, .1, 1);
@@ -172,7 +214,7 @@
                     mesh.position.y = -.2 * i + 1
                     mesh.castShadow = true;
                     mesh.receiveShadow = true;
-                    scene.add(mesh)
+                    globalContainer.add(mesh)
                     slides.push(mesh);
                 }
 
@@ -230,9 +272,8 @@
                     controller1.update();
                     controller2.update();
                     effect.requestAnimationFrame(render);
-                    camera.position.y = -1;
+                    globalContainer.position.y = 1;
                     effect.render(scene, camera);
-                    camera.position.y += 1;
                     return;
                 }
 
