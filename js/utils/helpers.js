@@ -7,17 +7,19 @@ function addEvents() {
         controller1 = new THREE.ViveController(0);
         controller1.standingMatrix = vrControls.getStandingMatrix();
         controller1.castShadow = true;
+        controller1.addEventListener('triggerdown', controller1Down, false)
         scene.add(controller1);
         controller2 = new THREE.ViveController(1);
         controller2.standingMatrix = vrControls.getStandingMatrix();
         controller2.castShadow = true;
+        controller2.addEventListener('triggerdown', controller2Down, false)
         scene.add(controller2);
         var loader = new THREE.OBJLoader();
         loader.setPath('assets/models/vive-controller/');
         loader.load('vr_controller_vive_1_5.obj', function (object) {
 
             var controller = object.children[ 0 ];
-            controller.material = new THREE.MeshPhongMaterial({color: 0xFFFFFF})
+            controller.material = material//new THREE.MeshPhongMaterial({color: 0xFFFFFF})
             controller1.add(object.clone());
             controller2.add(object.clone());
 
@@ -32,6 +34,32 @@ function addEvents() {
     window.addEventListener('vrdisplaypresentchange', function (event) {
         //vr = renderer.isPresenting
     }, false);
+}
+
+function controller1Down() {
+    console.log(controller1.position)
+
+    var geo = new THREE.TetrahedronGeometry(.1, Math.floor(Math.random() * 3));
+    var mesh = new THREE.Mesh(geo, material);
+    //mesh.position.copy(controller2.position)
+    mesh.matrixAutoUpdate = false;
+    mesh.matrix.copy(controller1.matrix);
+    mesh.matrixWorldNeedsUpdate = true;
+    //mesh.scale.set(15, 15 / 10, 15)
+    scene.add(mesh);
+}
+
+function controller2Down() {
+    console.log(controller2.position)
+
+    var geo = new THREE.TetrahedronGeometry(.1, Math.floor(Math.random() * 3));
+    var mesh = new THREE.Mesh(geo, material);
+    //mesh.position.copy(controller2.position)
+    mesh.matrixAutoUpdate = false;
+    mesh.matrix.copy(controller2.matrix);
+    mesh.matrixWorldNeedsUpdate = true;
+    //mesh.scale.set(15, 15 / 10, 15)
+    scene.add(mesh);
 }
 
 function toggleVR(enabled) {

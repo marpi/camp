@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <title>[Vian] Camp Workshop</title>
+        <title>Test</title>
         <meta charset="utf-8">
         <meta property="og:title" content="Camp Workshop"/>
         <meta property="og:type" content="website"/>
@@ -43,39 +43,41 @@
             var mobile = false;
             var vr = false;
 
-            var objects = [];
-
             init();
             setup();
             render();
 
             function init() {
 
-                // audio
-
-                audio = new AudioReactive({});
-                audio.playMedia('assets/sound/ritual');
-
                 // renderer
-
+                //this is your engine
                 renderer = new THREE.WebGLRenderer({antialias: true});
+                //for retina displays - accounts for different resolutions
                 renderer.setPixelRatio(window.devicePixelRatio);
+                //fullscreen
                 renderer.setSize(window.innerWidth, window.innerHeight);
+                //dom render is the canvas - 3D canvas
+                //less like a bitmap - instead a window into GL
+
                 document.body.appendChild(renderer.domElement);
 
-                // scene
+                // creates a new scene
 
                 scene = new THREE.Scene();
 
                 // camera
 
+                //PerspecticeCamera(FOV measured in degrees- 90 degree - how close that is to your face - 150 would feel like fish eye - number close to zero you lose perspective, )
                 camera = new THREE.PerspectiveCamera(90, window.innerWidth / window.innerHeight, 0.1, 10000);
+                //position as a vector (x,y,z)
                 camera.position.set(0, 0, 3);
 
                 // controls
 
+                //system that lets you rotate and zoon in an out
+                //autoRotateSpeed()
                 controls = new THREE.OrbitControls(camera);
-                //controls.autoRotate = true;
+                controls.autoRotate = true;
 
                 // events
 
@@ -83,79 +85,82 @@
 
             }
 
+
+            //this is where we will spend most of our time today
             function setup() {
-                var cubeMap = getCubeMap(1);
-
-                var cubeShader = THREE.ShaderLib['cube'];
-                cubeShader.uniforms['tCube'].value = cubeMap;
-
-                var skyBoxMaterial = new THREE.ShaderMaterial({
-                    fragmentShader: cubeShader.fragmentShader,
-                    vertexShader: cubeShader.vertexShader,
-                    uniforms: cubeShader.uniforms,
-                    depthWrite: false,
-                    side: THREE.BackSide
-                });
-
-                var skyBox = new THREE.Mesh(new THREE.CubeGeometry(1000, 1000, 1000), skyBoxMaterial);
-
-                scene.add(skyBox);
 
                 // lights
 
-                light = new THREE.DirectionalLight(0xFFFFFF);
+                //difference kinds of lights
+                //points, directional (shadows, hits everything at once), ambient lights
+                light = new THREE.DirectionalLight(0x008080);
                 light.position.set(.2, .1, .2);
                 scene.add(light);
 
                 // objects
 
+                //this is the shape out the 
+                //geometry is the skeleton and the mesh is the material or covering
+                //environmental cube map
+                var cubeShader = THREE.ShaderLib['cube'];
+                 cubeShader.uniforms['tCube'].value = getCubeMap(4);
+                 
+                 var skyBoxMaterial = new THREE.ShaderMaterial({
+                 fragmentShader: cubeShader.fragmentShader,
+                 vertexShader: cubeShader.vertexShader,
+                 uniforms: cubeShader.uniforms,
+                 depthWrite: false,
+                 side: THREE.BackSide
+                 });
+                 
+                 var skyBox = new THREE.Mesh(new THREE.CubeGeometry(100, 100, 100),skyBoxMaterial);
+                 
+                 scene.add(skyBox);
+
+                //phong material
                 var material = new THREE.MeshStandardMaterial({
-                    //color:0xFF0000,
-                    metalness: 1,
-                    roughness: 0.6,
-                    envMap: cubeMap,
-                    shading: THREE.FlatShading
-                });//shading: THREE.FlatShading
-                var geo = new THREE.TetrahedronGeometry(.1, 0);
-                for (var i = 0; i < 64; i++) {
-                    var mesh = new THREE.Mesh(geo, material);
-                    scene.add(mesh);
-                    objects.push(mesh)
-                    mesh.position.x = -3 + Math.random() * 6;
-                    mesh.position.y = -3 + Math.random() * 6;
-                    mesh.position.z = -3 + Math.random() * 6;
-                    mesh.rotation.set(Math.random() * Math.PI * 2, Math.random() * Math.PI * 2, Math.random() * Math.PI * 2)
-                }
+                    metalness:0.75,
+                    shading: THREE.FlatShading});
+                var geo = new THREE.OctahedronGeometry(1, 2);
+                var mesh = new THREE.Mesh(geo, material);
+                scene.add(mesh);
+
+
+                
+
+                /*var geometry = new THREE.TorusKnotGeometry( 10, 3, 100, 16 );
+                var material = new THREE.MeshBasicMaterial( { color: 0xffff00 } );
+                var torusKnot = new THREE.Mesh( geometry, material );
+                scene.add( torusKnot );*/
             }
 
+            //most cases it's 60fsp but with better computers and VR it will run faster 120fsp
             function render() {
+
+                //date object in milliseconds
                 var time = Date.now() * 0.001;
 
-                //light.position.x = Math.sin(time*10);
-                //light.position.z = Math.cos(10*time);
-
-                audio.frequencyData = audio.update();
-
-                for (var i = 0; i < objects.length; i++) {
-                    var s = 5 * audio.frequencies[i] / 128
-                    objects[i].scale.set(s, s, s)
-                }
+                //rotating the position of the light
+                //could do z as well
+                //no light position will be a constant light
+                //light.position.x = Math.sin(time);
+                //light.position.z = Math.cos(time);
 
                 // vr
 
+                //will speed up frame right and to use controllers available with VR
                 if (vr) {
                     vrControls.update();
                     controller1.update();
                     controller2.update();
                     effect.requestAnimationFrame(render);
-                    //camera.position.y-=1;
                     effect.render(scene, camera);
-                    //camera.position.y+=1;
                     return;
                 }
 
                 // web and mobile
 
+                //sets framerate and uses the controls - gyroscope, etc. from mobile or web
                 requestAnimationFrame(render);
                 controls.update();
                 if (mobile) {
