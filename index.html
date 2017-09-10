@@ -47,6 +47,7 @@
             var container
 
             var objects = [];
+            var slides = []
 
             init();
             setup();
@@ -108,10 +109,10 @@
                 // lights
 
                 light = new THREE.DirectionalLight(0xFFFFFF);
-                light.position.set(.1, 1, .2);
+                light.position.set(.1, .5, .2);
                 light.castShadow = true;
                 //directionalLight.shadowDarkness = .1
-                var roz = 1
+                var roz = 2
                 light.shadow.camera.near = -roz * 2
                 light.shadow.camera.far = roz * 2
                 light.shadow.camera.left = -roz * 2
@@ -120,7 +121,7 @@
                 light.shadow.camera.bottom = -roz
                 light.shadow.mapSize.width = 1024;
                 light.shadow.mapSize.height = 1024;
-                light.shadow.bias = -0.0002
+                light.shadow.bias = -0.002
                 scene.add(light);
 
                 // objects
@@ -137,16 +138,16 @@
                 for (var i = 0; i < 199; i++) {
                     var geo = new THREE.TetrahedronGeometry(.1, Math.floor(Math.random() * 3));
                     var mesh = new THREE.Mesh(geo, material);
-                    mesh.position.x = -1 + Math.random() * 2;
-                    mesh.position.y = -1 + Math.random() * 2;
-                    mesh.position.z = -1 + Math.random() * 2;
+                    mesh.position.x = -2 + Math.random() * 4;
+                    mesh.position.y = -2 + Math.random() * 4;
+                    mesh.position.z = -2 + Math.random() * 4;
                     var s = Math.random() * 2
                     mesh.scale.set(s, s, s)
                     mesh.rotation.set(Math.random() * 4, Math.random() * 4, Math.random() * 4)
                     container.add(mesh);
                 }
 
-                var geo = new THREE.TetrahedronGeometry(.1,2);
+                var geo = new THREE.TetrahedronGeometry(.1, 2);
                 var mesh = new THREE.Mesh(geo, material);
                 mesh.position.y = -1;
                 mesh.scale.set(15, 15 / 10, 15)
@@ -162,6 +163,34 @@
                 container.castShadow = true;
                 container.receiveShadow = true;
                 scene.add(container)
+
+
+                for (var i = 0; i < 10; i++) {
+                    //var geo = new THREE.BoxGeometry(1, .1, 1);
+                    var geo = new THREE.CylinderGeometry(.1 * i, .1 * (1 + i), .2, 6);
+                    var mesh = new THREE.Mesh(geo, material);
+                    mesh.position.y = -.2 * i + 1
+                    mesh.castShadow = true;
+                    mesh.receiveShadow = true;
+                    scene.add(mesh)
+                    slides.push(mesh);
+                }
+
+                animate()
+            }
+
+            function animate() {
+
+                for (var i = 0; i < slides.length; i++) {
+                    var mesh = slides[i]
+                    TweenLite.to(mesh.rotation, 1, {
+                        delay: 1 - .1 * i,
+                        y: mesh.rotation.y + Math.PI * 2 / 6,
+                        ease: Back.easeOut
+                    });
+                }
+
+                TweenLite.delayedCall(2, animate)
             }
 
 
@@ -169,8 +198,8 @@
                 var time = Date.now() * 0.0001;
 
 
-                light.position.x = Math.sin(time);
-                light.position.z = Math.cos(time);
+                light.position.x = Math.sin(time) * .1;
+                light.position.z = Math.cos(time) * .1;
 
                 /*audio.frequencyData = audio.update();
                  
@@ -199,7 +228,7 @@
                     controller1.update();
                     controller2.update();
                     effect.requestAnimationFrame(render);
-                    container.position.y=1;
+                    container.position.y = 1;
                     effect.render(scene, camera);
                     //camera.position.y+=1;
                     return;
