@@ -171,5 +171,6 @@ export default class Drum extends Actor {
 		shape.material.color.setHex( hex );
 	}
 
+	
 
 }
