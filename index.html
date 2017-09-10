@@ -150,7 +150,7 @@
                     var mesh = new THREE.Mesh(geo, material);
                     while (mesh.position.distanceTo(scene.position) > 3 || mesh.position.distanceTo(scene.position) < 2 || mesh.position.x == 0 || mesh.position.y < -1) {
                         mesh.position.x = -3 + Math.random() * 6;
-                        mesh.position.y = -3 + Math.random() * 6;
+                        mesh.position.y = -3;
                         mesh.position.z = -3 + Math.random() * 6;
                     }
                     var s = Math.random() * 2
@@ -193,7 +193,7 @@
                     var mesh = new THREE.Mesh(geo, blackMaterial);
                     while (mesh.position.distanceTo(scene.position) < 5) {
                         mesh.position.x = -10 + Math.random() * 20;
-                        mesh.position.y = -10 + Math.random() * 20;
+                        mesh.position.y = -10;
                         mesh.position.z = -10 + Math.random() * 20;
                     }
                     var s = 5 + Math.random() * 10

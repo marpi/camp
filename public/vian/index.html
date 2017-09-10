@@ -1,305 +1,337 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <title>Camp Workshop</title>
-        <meta charset="utf-8">
-        <meta property="og:title" content="Camp Workshop"/>
-        <meta property="og:type" content="website"/>
-        <meta property="og:image" content=""/>
-        <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 
-        <style>
-            body {
-                margin: 0px;
-                overflow: hidden;
-                background-color: #000000;
+<head>
+    <title>Camp Workshop</title>
+    <meta charset="utf-8">
+    <meta property="og:title" content="Camp Workshop" />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="" />
+    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <style>
+    body {
+        margin: 0px;
+        overflow: hidden;
+        background-color: #000000;
+    }
+    </style>
+</head>
+
+<body>
+    <script src="js/third-party/threejs/three.js"></script>
+    <script src="js/third-party/threejs/vr/ViveController.js"></script>
+    <script src="js/third-party/threejs/vr/WebVR.js"></script>
+    <script src="js/third-party/threejs/loaders/OBJLoader.js"></script>
+    <script src="js/third-party/threejs/effects/VREffect.js"></script>
+    <script src="js/third-party/threejs/effects/StereoEffect.js"></script>
+    <script src="js/third-party/threejs/controls/VRControls.js"></script>
+    <script src="js/third-party/threejs/controls/DeviceOrientationControls.js"></script>
+    <script src="js/third-party/threejs/controls/OrbitControls.js"></script>
+    <script src="js/third-party/TweenMax.min.js"></script>
+    <script src="js/third-party/perlin.js"></script>
+    <script src="js/utils/helpers.js"></script>
+    <script src="js/utils/AudioReactive.js"></script>
+    <script>
+    var camera, scene, renderer, effect, controls, vrControls, light;
+    var controller1, controller2;
+    var mobile = false;
+    var vr = false;
+    var max = 40;
+    var material;
+    var container
+    var globalContainer
+
+    var objects = [];
+    var slides = []
+    var groundSlides = []
+    var monkeyHead;
+    var monkeyHeadTween;
+    var previousCameraPosition = new THREE.Vector3();
+
+    init();
+    setup();
+    render();
+
+    function init() {
+
+        // audio
+
+        //audio = new AudioReactive({});
+        //audio.playMedia('assets/sound/ritual');
+
+        // renderer
+
+        renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setPixelRatio(window.devicePixelRatio);
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.shadowMap.enabled = true;
+        document.body.appendChild(renderer.domElement);
+
+        // scene
+
+        scene = new THREE.Scene();
+
+        // camera
+
+        camera = new THREE.PerspectiveCamera(90, window.innerWidth / window.innerHeight, 0.1, 10000);
+        camera.position.set(0, 0, 3);
+
+        // controls
+
+        controls = new THREE.OrbitControls(camera);
+        //controls.autoRotate = true;
+
+        // events
+
+        addEvents();
+
+    }
+
+    function setup() {
+        var cubeMap = getCubeMap(8);
+
+        var cubeShader = THREE.ShaderLib['cube'];
+        cubeShader.uniforms['tCube'].value = cubeMap;
+
+        var skyBoxMaterial = new THREE.ShaderMaterial({
+            fragmentShader: cubeShader.fragmentShader,
+            vertexShader: cubeShader.vertexShader,
+            uniforms: cubeShader.uniforms,
+            depthWrite: false,
+            side: THREE.BackSide
+        });
+
+        var skyBox = new THREE.Mesh(new THREE.CubeGeometry(1000, 1000, 1000), skyBoxMaterial);
+
+        //scene.add(skyBox);
+
+        // lights
+
+        light = new THREE.DirectionalLight(0xFFFFFF);
+        light.position.set(.1, .5, .2);
+        light.castShadow = true;
+        //directionalLight.shadowDarkness = .1
+        var roz = 2
+        light.shadow.camera.near = -roz * 2
+        light.shadow.camera.far = roz * 2
+        light.shadow.camera.left = -roz * 2
+        light.shadow.camera.right = roz * 2
+        light.shadow.camera.top = roz
+        light.shadow.camera.bottom = -roz
+        light.shadow.mapSize.width = 1024;
+        light.shadow.mapSize.height = 1024;
+        light.shadow.bias = -0.002
+        scene.add(light);
+
+        // objects
+
+        material = new THREE.MeshStandardMaterial({
+            //color:0xFF0000,
+            metalness: 1,
+            roughness: .3,
+            envMap: cubeMap,
+            shading: THREE.FlatShading
+        }); //shading: THREE.FlatShading
+
+        globalContainer = new THREE.Group();
+        scene.add(globalContainer);
+
+        // gold diamonds
+
+        container = new THREE.Group();
+        for (var i = 0; i < 99; i++) {
+            var geo = new THREE.ConeGeometry(4, 5, 4, 1);
+            var mesh = new THREE.Mesh(geo, material);
+            while (mesh.position.distanceTo(scene.position) < 2) {
+            mesh.position.x = -3 + Math.random() * 6;
+            mesh.position.y = -.8;
+            mesh.position.z = -3 + Math.random() * 6;
             }
-        </style>
-    </head>
-    <body>
+            var s = Math.random() * .1
+            mesh.scale.set(s, s, s)
+            mesh.lookAt(scene.position)
+            //mesh.rotation.set(Math.random() * 4, Math.random() * 4, Math.random() * 4)
+            container.add(mesh);
+        }
 
-        <script src="js/third-party/threejs/three.js"></script>
-        <script src="js/third-party/threejs/vr/ViveController.js"></script>
-        <script src="js/third-party/threejs/vr/WebVR.js"></script>
+        /*var geo = new THREE.TetrahedronGeometry(.1, 2);
+         var mesh = new THREE.Mesh(geo, material);
+         mesh.position.y = -1.5;
+         mesh.scale.set(15, 15 / 10, 15)
+         container.add(mesh);*/
 
-        <script src="js/third-party/threejs/loaders/OBJLoader.js"></script>
-        <script src="js/third-party/threejs/effects/VREffect.js"></script>
-        <script src="js/third-party/threejs/effects/StereoEffect.js"></script>
+        var geom = new THREE.Geometry();
+        for (var i = 0; i < container.children.length; i++) {
+            container.children[i].updateMatrix();
+            geom.merge(container.children[i].geometry, container.children[i].matrix);
+        }
 
-        <script src="js/third-party/threejs/controls/VRControls.js"></script>
-        <script src="js/third-party/threejs/controls/DeviceOrientationControls.js"></script>
-        <script src="js/third-party/threejs/controls/OrbitControls.js"></script>
+        container = new THREE.Mesh(geom, material);
+        container.castShadow = true;
+        container.receiveShadow = true;
+        globalContainer.add(container)
 
-        <script src="js/third-party/TweenMax.min.js"></script>
-        <script src="js/third-party/perlin.js"></script>
 
-        <script src="js/utils/helpers.js"></script>
-        <script src="js/utils/AudioReactive.js"></script>
+        // black diamonds
 
-        <script>
+        var blackMaterial = new THREE.MeshStandardMaterial({
+            //color:0xFF0000,
+            metalness: 1,
+            roughness: 0,
+            envMap: getCubeMap(7),
+            shading: THREE.FlatShading
+        }); //shading: THREE.FlatShading
 
-            var camera, scene, renderer, effect, controls, vrControls, light;
-            var controller1, controller2;
-            var mobile = false;
-            var vr = false;
-            var max = 40;
-            var material;
-            var container
-            var globalContainer
-
-            var objects = [];
-            var slides = []
-            var monkeyHead;
-
-            init();
-            setup();
-            render();
-
-            function init() {
-
-                // audio
-
-                //audio = new AudioReactive({});
-                //audio.playMedia('assets/sound/ritual');
-
-                // renderer
-
-                renderer = new THREE.WebGLRenderer({antialias: true});
-                renderer.setPixelRatio(window.devicePixelRatio);
-                renderer.setSize(window.innerWidth, window.innerHeight);
-                renderer.shadowMap.enabled = true;
-                document.body.appendChild(renderer.domElement);
-
-                // scene
-
-                scene = new THREE.Scene();
-
-                // camera
-
-                camera = new THREE.PerspectiveCamera(90, window.innerWidth / window.innerHeight, 0.1, 10000);
-                camera.position.set(0, 0, 3);
-
-                // controls
-
-                controls = new THREE.OrbitControls(camera);
-                //controls.autoRotate = true;
-
-                // events
-
-                addEvents();
-
+        var container = new THREE.Group();
+        for (var i = 0; i < 40; i++) {
+            var geo = new THREE.ConeGeometry(4, 5, 4, 1);
+            var mesh = new THREE.Mesh(geo, blackMaterial);
+            while (mesh.position.distanceTo(scene.position) < 5) {
+                mesh.position.x = -10 + Math.random() * 20;
+                mesh.position.y = -.8;
+                mesh.position.z = -10 + Math.random() * 20;
             }
+            var s = .4
+            mesh.scale.set(s, s, s)
+            mesh.lookAt(scene.position)
+            //mesh.rotation.set(Math.random() * 4, Math.random() * 4, Math.random() * 4)
+            container.add(mesh);
+        }
+        var geom = new THREE.Geometry();
+        for (var i = 0; i < container.children.length; i++) {
+            container.children[i].updateMatrix();
+            geom.merge(container.children[i].geometry, container.children[i].matrix);
+        }
+        container = new THREE.Mesh(geom, blackMaterial);
+        container.castShadow = true;
+        container.receiveShadow = true;
+        globalContainer.add(container)
 
-            function setup() {
-                var cubeMap = getCubeMap(0);
+        // pyramid
 
-                var cubeShader = THREE.ShaderLib['cube'];
-                cubeShader.uniforms['tCube'].value = cubeMap;
+        for (var i = 0; i < 10; i++) {
+            //var geo = new THREE.BoxGeometry(1, .1, 1);
+            var geo = new THREE.CylinderGeometry(.1 * i, .1 * (1 + i), .2, 6);
+            var mesh = new THREE.Mesh(geo, material);
+            mesh.position.y = -.2 * i + 1
+            mesh.castShadow = true;
+            mesh.receiveShadow = true;
+            globalContainer.add(mesh)
+            slides.push(mesh);
+        }
 
-                var skyBoxMaterial = new THREE.ShaderMaterial({
-                    fragmentShader: cubeShader.fragmentShader,
-                    vertexShader: cubeShader.vertexShader,
-                    uniforms: cubeShader.uniforms,
-                    depthWrite: false,
-                    side: THREE.BackSide
-                });
+        var loader = new THREE.OBJLoader();
+        loader.setPath('assets/models/');
+        loader.load('monkey.obj', function(object) {
+            globalContainer.add(object)
+            monkeyHead = object;
+            monkeyHeadTween = new THREE.Object3D();
+            object.children[0].material = material;
+            object.position.y = 1;
 
-                var skyBox = new THREE.Mesh(new THREE.CubeGeometry(1000, 1000, 1000), skyBoxMaterial);
+            animate()
+        });
 
-                //scene.add(skyBox);
+    }
 
-                // lights
+    function animate(autoNext) {
+        var rotation = monkeyHead.rotation.y
+        while (rotation == monkeyHead.rotation.y) {
+            var num = Math.round(Math.random() * 6);
+            rotation = num / 6 * Math.PI * 2
+            console.log(num, monkeyHead.rotation.y)
+        }
 
-                light = new THREE.DirectionalLight(0xFFFFFF);
-                light.position.set(.1, .5, .2);
-                light.castShadow = true;
-                //directionalLight.shadowDarkness = .1
-                var roz = 2
-                light.shadow.camera.near = -roz * 2
-                light.shadow.camera.far = roz * 2
-                light.shadow.camera.left = -roz * 2
-                light.shadow.camera.right = roz * 2
-                light.shadow.camera.top = roz
-                light.shadow.camera.bottom = -roz
-                light.shadow.mapSize.width = 1024;
-                light.shadow.mapSize.height = 1024;
-                light.shadow.bias = -0.002
-                scene.add(light);
+        if (monkeyHead)
+            TweenLite.to(monkeyHead.rotation, .5, { x: 0, y: rotation, z: 0 })
 
-                // objects
+        for (var i = 0; i < slides.length; i++) {
+            var mesh = slides[i]
+            TweenLite.to(mesh.rotation, .5, {
+                delay: .05 * i,
+                y: rotation,
+                ease: Back.easeOut
+            });
+        }
+        for (var i = 0; i < groundSlides.length; i++) {
+            var mesh = groundSlides[i]
+            TweenLite.to(mesh.position, .3, {
+                delay: .5 + .1 * i,
+                y: .5 * (1 - i / groundSlides.length) - 1,
+                ease: Back.easeOut
+            });
+            TweenLite.to(mesh.position, 1, {
+                delay: .5 + .3 + .1 * i,
+                y: 0 - 1,
+                ease: Back.easeOut
+            });
+        }
 
-                material = new THREE.MeshStandardMaterial({
-                    //color:0xFF0000,
-                    metalness: 1,
-                    roughness: .3,
-                    envMap: cubeMap,
-                    shading: THREE.FlatShading
-                });//shading: THREE.FlatShading
+        TweenLite.delayedCall(3, animate)
 
-                globalContainer = new THREE.Group();
-                scene.add(globalContainer);
-
-                var loader = new THREE.OBJLoader();
-                loader.setPath('assets/models/');
-                loader.load('monkey.obj', function (object) {
-                    globalContainer.add(object)
-                    monkeyHead=object;
-                    object.children[0].material = material;
-                    object.position.y = 1;
-                });
-
-                // gold diamonds
-
-                container = new THREE.Group();
-                for (var i = 0; i < 99; i++) {
-                    var geo = new THREE.TetrahedronGeometry(.1, Math.floor(Math.random() * 3));
-                    var mesh = new THREE.Mesh(geo, material);
-                    while (mesh.position.distanceTo(scene.position) > 2 || mesh.position.distanceTo(scene.position) < 1.5 || mesh.position.x == 0 || mesh.position.y < -1) {
-                        mesh.position.x = -3 + Math.random() * 6;
-                        mesh.position.y = -3 + Math.random() * 6;
-                        mesh.position.z = -3 + Math.random() * 6;
-                    }
-                    var s = Math.random() * 2
-                    mesh.scale.set(s, s, s)
-                    mesh.rotation.set(Math.random() * 4, Math.random() * 4, Math.random() * 4)
-                    container.add(mesh);
-                }
-
-                var geo = new THREE.TetrahedronGeometry(.1, 2);
-                var mesh = new THREE.Mesh(geo, material);
-                mesh.position.y = -1.5;
-                mesh.scale.set(15, 15 / 10, 15)
-                container.add(mesh);
-
-                var geom = new THREE.Geometry();
-                for (var i = 0; i < container.children.length; i++) {
-                    container.children[i].updateMatrix();
-                    geom.merge(container.children[i].geometry, container.children[i].matrix);
-                }
-
-                container = new THREE.Mesh(geom, material);
-                container.castShadow = true;
-                container.receiveShadow = true;
-                globalContainer.add(container)
+        //console.log("ROTATE")
+    }
 
 
-                // black diamonds
+    function render() {
+        console.log();
 
-                var blackMaterial = new THREE.MeshStandardMaterial({
-                    //color:0xFF0000,
-                    metalness: 1,
-                    roughness: 0,
-                    envMap: getCubeMap(13),
-                    shading: THREE.FlatShading
-                });//shading: THREE.FlatShading
+        var time = Date.now() * 0.0001;
 
-                var container = new THREE.Group();
-                var geo = new THREE.TetrahedronGeometry(.1, 0);
-                for (var i = 0; i < 199; i++) {
-                    var mesh = new THREE.Mesh(geo, blackMaterial);
-                    while (mesh.position.distanceTo(scene.position) < 5) {
-                        mesh.position.x = -10 + Math.random() * 20;
-                        mesh.position.y = -10 + Math.random() * 20;
-                        mesh.position.z = -10 + Math.random() * 20;
-                    }
-                    mesh.lookAt(camera.position)
-                    var s = 5 + Math.random() * 10
-                    mesh.scale.set(s, s, s)
-                    mesh.rotation.set(Math.random() * 4, Math.random() * 4, Math.random() * 4)
-                    container.add(mesh);
-                }
-                var geom = new THREE.Geometry();
-                for (var i = 0; i < container.children.length; i++) {
-                    container.children[i].updateMatrix();
-                    geom.merge(container.children[i].geometry, container.children[i].matrix);
-                }
-                container = new THREE.Mesh(geom, blackMaterial);
-                container.castShadow = true;
-                container.receiveShadow = true;
-                globalContainer.add(container)
+        light.position.x = Math.sin(time) * .1;
+        light.position.z = Math.cos(time) * .1;
 
-                for (var i = 0; i < 10; i++) {
-                    //var geo = new THREE.BoxGeometry(1, .1, 1);
-                    var geo = new THREE.CylinderGeometry(.1 * i, .1 * (1 + i), .2, 6);
-                    var mesh = new THREE.Mesh(geo, material);
-                    mesh.position.y = -.2 * i + 1
-                    mesh.castShadow = true;
-                    mesh.receiveShadow = true;
-                    globalContainer.add(mesh)
-                    slides.push(mesh);
-                }
+        /*audio.frequencyData = audio.update();
+         
+         for (var i = 0; i < objects.length; i++) {
+         var s = 5 * audio.frequencies[i] / 128
+         objects[i].scale.set(s, s, s)
+         }*/
+        /*var i = 0
+         var perlinScale = Math.sin(time * .3) / 5;
+         for (var _x = 0; _x < max; _x++) {
+         for (var _y = 0; _y < max; _y++) {
+         for (var _z = 0; _z < 1; _z++) {
+         var mesh = objects[i];
+         var perlinValue = noise.perlin3(_x * perlinScale + time, _y * perlinScale, _z * perlinScale) * .5 + .5
+         mesh.scale.set(perlinValue, perlinValue, perlinValue)
+         //mesh.rotation.y = perlinValue;
+         i++;
+         }
+         }
+         }*/
 
-                animate()
+        // vr
+        if (monkeyHeadTween) {
+            if (previousCameraPosition.distanceTo(camera.position) > .1) {
+                monkeyHeadTween.lookAt(camera.position)
+                TweenLite.to(monkeyHead.rotation, .2, { x: monkeyHeadTween.rotation.x, y: monkeyHeadTween.rotation.y, z: monkeyHeadTween.rotation.z })
             }
+        }
 
-            function animate() {
+        if (vr) {
+            vrControls.update();
+            controller1.update();
+            controller2.update();
+            effect.requestAnimationFrame(render);
+            globalContainer.position.y = 1;
+            effect.render(scene, camera);
+            return;
+        }
 
-                for (var i = 0; i < slides.length; i++) {
-                    var mesh = slides[i]
-                    TweenLite.to(mesh.rotation, 1, {
-                        delay: 1 - .1 * i,
-                        y: mesh.rotation.y + Math.PI * 2 / 6,
-                        ease: Back.easeOut
-                    });
-                }
+        // web and mobile
 
-                TweenLite.delayedCall(2, animate)
+        requestAnimationFrame(render);
+        controls.update();
+        if (mobile) {
+            camera.position.set(0, 0, 0);
+            camera.translateZ(3);
+        }
+        renderer.render(scene, camera);
 
-                //console.log("ROTATE")
-            }
+        previousCameraPosition.copy(camera.position)
+    }
+    </script>
+</body>
 
-
-            function render() {
-                var time = Date.now() * 0.0001;
-
-
-                light.position.x = Math.sin(time) * .1;
-                light.position.z = Math.cos(time) * .1;
-
-                /*audio.frequencyData = audio.update();
-                 
-                 for (var i = 0; i < objects.length; i++) {
-                 var s = 5 * audio.frequencies[i] / 128
-                 objects[i].scale.set(s, s, s)
-                 }*/
-                /*var i = 0
-                 var perlinScale = Math.sin(time * .3) / 5;
-                 for (var _x = 0; _x < max; _x++) {
-                 for (var _y = 0; _y < max; _y++) {
-                 for (var _z = 0; _z < 1; _z++) {
-                 var mesh = objects[i];
-                 var perlinValue = noise.perlin3(_x * perlinScale + time, _y * perlinScale, _z * perlinScale) * .5 + .5
-                 mesh.scale.set(perlinValue, perlinValue, perlinValue)
-                 //mesh.rotation.y = perlinValue;
-                 i++;
-                 }
-                 }
-                 }*/
-
-                // vr
-                if(monkeyHead)monkeyHead.lookAt(camera.position)
-
-                if (vr) {
-                    vrControls.update();
-                    controller1.update();
-                    controller2.update();
-                    effect.requestAnimationFrame(render);
-                    globalContainer.position.y = 1;
-                    effect.render(scene, camera);
-                    return;
-                }
-
-                // web and mobile
-
-                requestAnimationFrame(render);
-                controls.update();
-                if (mobile) {
-                    camera.position.set(0, 0, 0);
-                    camera.translateZ(3);
-                }
-                renderer.render(scene, camera);
-            }
-
-        </script>
-    </body>
 </html>
