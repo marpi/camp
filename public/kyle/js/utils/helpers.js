@@ -1,3 +1,7 @@
+function degToRads(deg) {
+    return deg * Math.PI / 180;
+}
+
 function addEvents() {
 
     if (WEBVR.isAvailable() === true) {
