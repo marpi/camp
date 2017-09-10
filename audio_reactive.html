@@ -42,7 +42,6 @@
             var controller1, controller2;
             var mobile = false;
             var vr = false;
-            var max = 40;
 
             var objects = [];
 
@@ -54,8 +53,8 @@
 
                 // audio
 
-                //audio = new AudioReactive({});
-                //audio.playMedia('assets/sound/ritual');
+                audio = new AudioReactive({});
+                audio.playMedia('assets/sound/ritual');
 
                 // renderer
 
@@ -100,7 +99,7 @@
 
                 var skyBox = new THREE.Mesh(new THREE.CubeGeometry(1000, 1000, 1000), skyBoxMaterial);
 
-                //scene.add(skyBox);
+                scene.add(skyBox);
 
                 // lights
 
@@ -117,54 +116,29 @@
                     envMap: cubeMap,
                     shading: THREE.FlatShading
                 });//shading: THREE.FlatShading
-                var size = .1
-                for (var _x = 0; _x < max; _x++) {
-                    for (var _y = 0; _y < max; _y++) {
-                        for (var _z = 0; _z < 1; _z++) {
-                            var scale = noise.perlin3(_x * .15, _y * .15, _z * .15) * .5 + .5
-                            console.log(scale)
-
-                            //console.log(noise.perlin3(.123,1,1))
-                            //var geo = new THREE.TetrahedronGeometry(.1, Math.floor(Math.random()*3));
-                            var geo = new THREE.BoxGeometry(size, size, size)
-                            var mesh = new THREE.Mesh(geo, material);
-                            scene.add(mesh);
-                            objects.push(mesh)
-                            mesh.position.x = (_x - max / 2) * size
-                            mesh.position.y = (_y - max / 2) * size
-                            //mesh.position.z = (_z - max / 2) * size
-                        }
-                        //mesh.rotation.set(Math.random() * Math.PI * 2, Math.random() * Math.PI * 2, Math.random() * Math.PI * 2)
-                    }
+                var geo = new THREE.TetrahedronGeometry(.1, 0);
+                for (var i = 0; i < 64; i++) {
+                    var mesh = new THREE.Mesh(geo, material);
+                    scene.add(mesh);
+                    objects.push(mesh)
+                    mesh.position.x = -3 + Math.random() * 6;
+                    mesh.position.y = -3 + Math.random() * 6;
+                    mesh.position.z = -3 + Math.random() * 6;
+                    mesh.rotation.set(Math.random() * Math.PI * 2, Math.random() * Math.PI * 2, Math.random() * Math.PI * 2)
                 }
             }
-
 
             function render() {
                 var time = Date.now() * 0.001;
 
-
                 //light.position.x = Math.sin(time*10);
                 //light.position.z = Math.cos(10*time);
 
-                /*audio.frequencyData = audio.update();
-                 
-                 for (var i = 0; i < objects.length; i++) {
-                 var s = 5 * audio.frequencies[i] / 128
-                 objects[i].scale.set(s, s, s)
-                 }*/
-                var i = 0
-                var perlinScale=Math.sin(time*.3)/5
-                for (var _x = 0; _x < max; _x++) {
-                    for (var _y = 0; _y < max; _y++) {
-                        for (var _z = 0; _z < 1; _z++) {
-                            var mesh = objects[i];
-                            var perlinValue = noise.perlin3(_x * perlinScale + time, _y * perlinScale, _z * perlinScale) * .5 + .5
-                            mesh.scale.set(perlinValue, perlinValue, perlinValue)
-                            //mesh.rotation.y = perlinValue;
-                            i++;
-                        }
-                    }
+                audio.frequencyData = audio.update();
+
+                for (var i = 0; i < objects.length; i++) {
+                    var s = 5 * audio.frequencies[i] / 128
+                    objects[i].scale.set(s, s, s)
                 }
 
                 // vr
