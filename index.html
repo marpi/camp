@@ -49,6 +49,7 @@
 
             var objects = [];
             var slides = []
+            var monkeyHead;
 
             init();
             setup();
@@ -222,8 +223,9 @@
                 loader.setPath('assets/models/');
                 loader.load('monkey.obj', function (object) {
                     globalContainer.add(object)
-                    object.children[0].material=material;
-                    object.position.y=1;
+                    monkeyHead=object;
+                    object.children[0].material = material;
+                    object.position.y = 1;
                 });
 
                 animate()
@@ -274,6 +276,7 @@
                  }*/
 
                 // vr
+                if(monkeyHead)monkeyHead.lookAt(camera.position)
 
                 if (vr) {
                     vrControls.update();
