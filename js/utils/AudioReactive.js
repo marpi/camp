@@ -12,7 +12,7 @@
         this.element.style.position = "absolute";
         this.element.style.bottom = "0";
         this.element.style.width = "250px";
-        this.element.style.left = window.innerWidth / 2 - 300 / 2 + "px";
+        this.element.style.left = window.innerWidth / 2 - 250 / 2 + "px";
         document.body.appendChild(this.element);
         audio.element = this.element
         this.audio = audio;
@@ -22,7 +22,7 @@
 
     function onResize() {
         if (this.audio.element)
-            this.audio.element.style.left = window.innerWidth / 2 - 300 / 2 + "px";
+            this.audio.element.style.left = window.innerWidth / 2 - 250 / 2 + "px";
     }
 
     AudioReactiveMediaPlayer.prototype.play = function (src) {
