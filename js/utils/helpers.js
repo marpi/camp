@@ -1,6 +1,6 @@
 function addEvents() {
 
-    if (WEBVR.isAvailable() === true) {
+    /*if (WEBVR.isAvailable() === true) {
         vrControls = new THREE.VRControls(camera);
         vrControls.standing = true;
 
@@ -27,7 +27,7 @@ function addEvents() {
 
         effect = new THREE.VREffect(renderer);
         document.body.appendChild(WEBVR.getButton(effect, toggleVR));
-    }
+    }*/
 
     window.addEventListener('resize', onWindowResize, false);
     window.addEventListener('deviceorientation', setOrientationControls, true);
