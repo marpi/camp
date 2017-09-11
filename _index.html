@@ -45,6 +45,7 @@
             var max = 40;
             var material;
             var container
+            var container1
             var globalContainer
 
             var objects = [];
@@ -53,6 +54,7 @@
             var monkeyHead;
             var monkeyHeadTween;
             var previousCameraPosition = new THREE.Vector3();
+            var animating = false;
 
             init();
             setup();
@@ -62,8 +64,8 @@
 
                 // audio
 
-                //audio = new AudioReactive({});
-                //audio.playMedia('assets/sound/ritual');
+                audio = new AudioReactive({});
+                audio.playMedia('assets/sound/ritual');
 
                 // renderer
 
@@ -88,7 +90,7 @@
                 controls.minDistance = 2.5;
                 controls.maxDistance = 6;
                 controls.maxPolarAngle = Math.PI / 2;
-                //controls.autoRotate = true;
+                controls.autoRotate = true;
 
                 // events
 
@@ -153,7 +155,7 @@
                     var mesh = new THREE.Mesh(geo, material);
                     while (mesh.position.distanceTo(scene.position) > 3 || mesh.position.distanceTo(scene.position) < 2 || mesh.position.x == 0 || mesh.position.y < -1) {
                         mesh.position.x = -3 + Math.random() * 6;
-                        mesh.position.y = -3 + Math.random() * 6;
+                        mesh.position.y = -3;
                         mesh.position.z = -3 + Math.random() * 6;
                     }
                     var s = Math.random() * 2
@@ -179,6 +181,7 @@
                 container.receiveShadow = true;
                 globalContainer.add(container)
 
+                container1 = container
 
                 // black diamonds
 
@@ -190,13 +193,13 @@
                     shading: THREE.FlatShading
                 });//shading: THREE.FlatShading
 
-                var container = new THREE.Group();
+                container = new THREE.Group();
                 var geo = new THREE.TetrahedronGeometry(.1, 0);
                 for (var i = 0; i < 199; i++) {
                     var mesh = new THREE.Mesh(geo, blackMaterial);
                     while (mesh.position.distanceTo(scene.position) < 5) {
                         mesh.position.x = -10 + Math.random() * 20;
-                        mesh.position.y = -10 + Math.random() * 20;
+                        mesh.position.y = -10;
                         mesh.position.z = -10 + Math.random() * 20;
                     }
                     var s = 5 + Math.random() * 10;
@@ -213,6 +216,7 @@
                 container.castShadow = true;
                 container.receiveShadow = true;
                 globalContainer.add(container)
+
 
                 // pyramid
 
@@ -254,27 +258,32 @@
             }
 
             function animate(autoNext) {
+                if (animating)
+                    return;
+                animating = true;
+                TweenLite.delayedCall(.5, function () {
+                    animating = false
+                })
                 var rotation = monkeyHead.rotation.y
                 while (rotation == monkeyHead.rotation.y) {
                     var num = Math.round(Math.random() * 6);
                     rotation = num / 6 * Math.PI * 2
-                    console.log(num, monkeyHead.rotation.y)
+                    //console.log(num, monkeyHead.rotation.y)
                 }
 
-                var spd = .2 + Math.random() * .6
+                var spd = 0//.2 + Math.random() * .6
 
                 if (monkeyHead)
-                    TweenLite.to(monkeyHead.rotation, spd, {x: 0, y: rotation, z: 0}
-                    )
+                    //TweenLite.to(monkeyHead.rotation, spd, {x: 0, y: rotation, z: 0})
 
-                for (var i = 0; i < slides.length; i++) {
-                    var mesh = slides[i]
-                    TweenLite.to(mesh.rotation, .5, {
-                        delay: spd * i / slides.length,
-                        y: rotation,
-                        ease: Back.easeOut
-                    });
-                }
+                    for (var i = 0; i < slides.length; i++) {
+                        var mesh = slides[i]
+                        TweenLite.to(mesh.rotation, .5, {
+                            delay: spd * i / slides.length,
+                            y: rotation,
+                            ease: Back.easeOut
+                        });
+                    }
                 for (var i = 0; i < groundSlides.length; i++) {
                     var mesh = groundSlides[i]
                     TweenLite.to(mesh.position, .3, {
@@ -289,20 +298,46 @@
                     });
                 }
 
-                TweenLite.delayedCall(3, animate)
+                //TweenLite.delayedCall(3, animate)
 
                 //console.log("ROTATE")
             }
 
 
             function render() {
-                console.log();
+                //console.log();
 
                 var time = Date.now() * 0.0001;
 
 
                 light.position.x = Math.sin(time) * .1;
                 light.position.z = Math.cos(time) * .1;
+
+                audio.update();
+                var f = audio.frequencies[10]
+                var spd = 0
+                //if (monkeyHead)
+                //    TweenLite.to(monkeyHead.scale, spd, {z: audio.frequencies[10] / 100, y: audio.frequencies[10] / 100, x: audio.frequencies[10] / 100})
+                //TweenLite.to(container.scale, spd, {z: 1+audio.frequencies[11] / 300, y: 1+audio.frequencies[11] / 300, x: 1+audio.frequencies[11] / 300})
+                //TweenLite.to(container1.scale, spd, {z: 1+audio.frequencies[12] / 200, y: 1+audio.frequencies[12] / 200, x: 1+audio.frequencies[12] / 200})
+
+                for (var i = 0; i < slides.length; i++) {
+                    var mesh = slides[i]
+                    TweenLite.to(mesh.scale, 0, {
+                        //delay: spd * i / slides.length,
+                        x: 1 + audio.frequencies[i] / 200,
+                        z: 1 + audio.frequencies[i] / 200,
+                        //ease: Back.easeOut
+                    });
+                }
+                for (var i = 0; i < groundSlides.length; i++) {
+                    var mesh = groundSlides[i]
+                    TweenLite.to(mesh.position, 0, {
+                        //delay: 0,
+                        y: audio.frequencies[i] / 200 - 1,
+                        //ease: Back.easeOut
+                    });
+                }
 
                 /*audio.frequencyData = audio.update();
                  
@@ -326,9 +361,11 @@
 
                 // vr
                 if (monkeyHeadTween) {
-                    if (previousCameraPosition.distanceTo(camera.position) > .1) {
+                    if (Math.random()<.01 || previousCameraPosition.distanceTo(camera.position) > .1) {
                         monkeyHeadTween.lookAt(camera.position)
                         TweenLite.to(monkeyHead.rotation, .2, {x: monkeyHeadTween.rotation.x, y: monkeyHeadTween.rotation.y, z: monkeyHeadTween.rotation.z})
+                    }else if(Math.random()<.01){
+                        TweenLite.to(monkeyHead.rotation, .2, {x: Math.random()*1-.5, y: Math.random()*4-2, z: Math.random()*1-.5})
                     }
                 }
 
