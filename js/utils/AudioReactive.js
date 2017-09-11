@@ -1,5 +1,5 @@
 (function () {
-    
+
     // based on Odeo by @theSpite https://github.com/spite/codevember-2016/blob/master/js/Odeo.js
 
     var AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -8,9 +8,10 @@
 
         this.element = document.createElement('audio');
         this.element.controls = 'controls';
+        this.element.controlsList = 'nodownload';
         this.element.style.position = "absolute";
         this.element.style.bottom = "0";
-        this.element.style.width = "300px";
+        this.element.style.width = "250px";
         this.element.style.left = window.innerWidth / 2 - 300 / 2 + "px";
         document.body.appendChild(this.element);
         audio.element = this.element
@@ -30,10 +31,10 @@
             this.element.src = src;
             if (this.element.canPlayType('audio/mpeg;')) {
                 //this.element.type = 'audio/mpeg';
-                this.element.src = src+'.mp3';
+                this.element.src = src + '.mp3';
             } else {
                 //this.element.type = 'audio/ogg';
-                this.element.src = src+'.ogg';
+                this.element.src = src + '.ogg';
             }
             this.element.play();
             this.audioSource = this.audio.context.createMediaElementSource(this.element);
@@ -43,6 +44,10 @@
         this.audioSource.connect(this.audio.analyser);
         this.audioSource.connect(this.audio.context.destination);
 
+    }
+    
+    AudioReactiveMediaPlayer.prototype.pause = function () {
+            this.element.pause();
     }
 
     function AudioReactiveMicrophone(audio) {
@@ -99,11 +104,13 @@
 
     }
 
-    AudioReactive.prototype.playMedia = function (src) {
+    AudioReactive.prototype.playMedia = function (src, noAutoplay) {
 
         if (!this.media)
             this.media = new AudioReactiveMediaPlayer(this);
         this.media.play(src);
+        if (noAutoplay)
+            this.media.pause();
 
     }
 

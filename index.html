@@ -1,12 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <title>Camp Workshop</title>
+        
+        <title>CAMP Workshop</title>
         <meta charset="utf-8">
-        <meta property="og:title" content="Camp Workshop"/>
+        <meta property="og:title" content="CAMP Workshop"/>
         <meta property="og:type" content="website"/>
         <meta property="og:image" content=""/>
         <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+
+        <meta name="author"              content="Marpi">
+        <meta name="description"         content="Building generative VR worlds on the web">
+        <meta property="og:title"        content="CAMP Workshop">
+        <meta property="og:description"  content="Building generative VR worlds on the web">
+        <meta property="og:url"          content="https://classes.marpi.pl/camp/">
+        <meta property="og:site_name"    content="CAMP Workshop">
+        <meta property="og:type"         content="website">
+        <meta name="twitter:card"        content="summary_large_image">
+        <meta name="twitter:url"         content="https://classes.marpi.pl/camp/">
+        <meta name="twitter:title"       content="CAMP Workshop">
+        <meta property="og:image"        content="https://classes.marpi.pl/camp/assets/index.jpg">
+        <meta name="twitter:image"       content="https://classes.marpi.pl/camp/assets/index.jpg">
 
         <style>
             body {
@@ -45,6 +59,7 @@
             var max = 40;
             var material;
             var container
+            var container1
             var globalContainer
 
             var objects = [];
@@ -53,6 +68,7 @@
             var monkeyHead;
             var monkeyHeadTween;
             var previousCameraPosition = new THREE.Vector3();
+            var animating = false;
 
             init();
             setup();
@@ -62,8 +78,8 @@
 
                 // audio
 
-                //audio = new AudioReactive({});
-                //audio.playMedia('assets/sound/ritual');
+                audio = new AudioReactive(false);
+                audio.playMedia('assets/sound/ritual', true);
 
                 // renderer
 
@@ -80,7 +96,7 @@
                 // camera
 
                 camera = new THREE.PerspectiveCamera(90, window.innerWidth / window.innerHeight, 0.1, 10000);
-                camera.position.set(0, 0, 3);
+                camera.position.set(0, .5, 3);
 
                 // controls
 
@@ -179,6 +195,7 @@
                 container.receiveShadow = true;
                 globalContainer.add(container)
 
+                container1 = container
 
                 // black diamonds
 
@@ -190,7 +207,7 @@
                     shading: THREE.FlatShading
                 });//shading: THREE.FlatShading
 
-                var container = new THREE.Group();
+                container = new THREE.Group();
                 var geo = new THREE.TetrahedronGeometry(.1, 0);
                 for (var i = 0; i < 199; i++) {
                     var mesh = new THREE.Mesh(geo, blackMaterial);
@@ -213,6 +230,7 @@
                 container.castShadow = true;
                 container.receiveShadow = true;
                 globalContainer.add(container)
+
 
                 // pyramid
 
@@ -246,8 +264,8 @@
                     monkeyHead = object;
                     monkeyHeadTween = new THREE.Object3D();
                     object.children[0].material = material;
-                    object.children[0].castShadow=true;
-                    object.children[0].receiveShadow=true;
+                    object.children[0].castShadow = true;
+                    object.children[0].receiveShadow = true;
                     object.position.y = 1;
 
                     animate()
@@ -298,13 +316,56 @@
 
 
             function render() {
-                console.log();
+                //console.log();
 
                 var time = Date.now() * 0.0001;
 
 
                 light.position.x = Math.sin(time) * .1;
                 light.position.z = Math.cos(time) * .1;
+
+                audio.update();
+                if (audio.frequencies[10] != 0) {
+                    var spd = 0
+                    if (monkeyHead)
+                        TweenLite.to(monkeyHead.scale, spd, {z: .4 + audio.frequencies[10] / 200, y: .4 + audio.frequencies[10] / 200, x: .4 + audio.frequencies[10] / 200})
+                    TweenLite.to(container.scale, spd, {z: 1 + audio.frequencies[11] / 300, y: 1 + audio.frequencies[11] / 300, x: 1 + audio.frequencies[11] / 300})
+                    TweenLite.to(container1.scale, spd, {z: 1 + audio.frequencies[12] / 200, y: 1 + audio.frequencies[12] / 200, x: 1 + audio.frequencies[12] / 200})
+
+                    for (var i = 0; i < slides.length; i++) {
+                        var mesh = slides[i]
+                        TweenLite.to(mesh.scale, 0, {
+                            //delay: spd * i / slides.length,
+                            x: .5 + audio.frequencies[i] / 200,
+                            z: .5 + audio.frequencies[i] / 200,
+                            //ease: Back.easeOut
+                        });
+                    }
+                    for (var i = 0; i < groundSlides.length; i++) {
+                        var mesh = groundSlides[i]
+                        TweenLite.to(mesh.position, 0, {
+                            //delay: 0,
+                            y: audio.frequencies[i] / 200 - 1.5,
+                            //ease: Back.easeOut
+                        });
+                    }
+                    if (monkeyHeadTween) {
+                        if (Math.random() < .01 || previousCameraPosition.distanceTo(camera.position) > .1) {
+                            monkeyHeadTween.lookAt(camera.position)
+                            TweenLite.to(monkeyHead.rotation, Math.random(), {x: monkeyHeadTween.rotation.x, y: monkeyHeadTween.rotation.y, z: monkeyHeadTween.rotation.z})
+                        } else if (Math.random() < .01) {
+                            TweenLite.to(monkeyHead.rotation, Math.random(), {x: Math.random() * 1 - .5, y: Math.random() * 4 - 2, z: Math.random() * 1 - .5})
+                        }
+                    }
+                    TweenLite.killDelayedCallsTo(animate)
+                } else {
+                    if (monkeyHeadTween) {
+                        if (previousCameraPosition.distanceTo(camera.position) > .1) {
+                            monkeyHeadTween.lookAt(camera.position)
+                            TweenLite.to(monkeyHead.rotation, .2, {x: monkeyHeadTween.rotation.x, y: monkeyHeadTween.rotation.y, z: monkeyHeadTween.rotation.z})
+                        }
+                    }
+                }
 
                 /*audio.frequencyData = audio.update();
                  
@@ -327,12 +388,6 @@
                  }*/
 
                 // vr
-                if (monkeyHeadTween) {
-                    if (previousCameraPosition.distanceTo(camera.position) > .1) {
-                        monkeyHeadTween.lookAt(camera.position)
-                        TweenLite.to(monkeyHead.rotation, .2, {x: monkeyHeadTween.rotation.x, y: monkeyHeadTween.rotation.y, z: monkeyHeadTween.rotation.z})
-                    }
-                }
 
                 if (vr) {
                     vrControls.update();
