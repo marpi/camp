@@ -8,8 +8,8 @@
 [![Kyle](/thumbs/kyle.jpg "Kyle")](http://classes.marpi.pl/camp/public/kyle)
 [![Matthew](/thumbs/matthew_w_diamonds.jpg "Matthew")](http://classes.marpi.pl/camp/public/matthew_w/diamonds.html)
 [![Building Generative VR Worlds on the Web](/thumbs/audio_reactive.jpg "Building Generative VR Worlds on the Web")](http://classes.marpi.pl/camp/audio_reactive.html)
-[![Building Generative VR Worlds on the Web](/thumbs/pretzel.jpg "Building Generative VR Worlds on the Web")](http://classes.marpi.pl/camp/pretzel.html)
 [![Building Generative VR Worlds on the Web](/thumbs/pyramid.jpg "Building Generative VR Worlds on the Web")](http://classes.marpi.pl/camp/pyramid.html)
+[![Building Generative VR Worlds on the Web](/thumbs/pretzel.jpg "Building Generative VR Worlds on the Web")](http://classes.marpi.pl/camp/pretzel.html)
 [![Building Generative VR Worlds on the Web](/thumbs/class.jpg "Building Generative VR Worlds on the Web")](http://classes.marpi.pl/camp/class.html)
 
 How to run
