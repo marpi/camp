@@ -75,11 +75,12 @@
                 // camera
 
                 camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.1, 10000);
-                camera.position.set(0, 7, 7);
+                camera.position.set(0, 0, 7);
 
                 // controls
 
                 controls = new THREE.OrbitControls(camera);
+                controls.target.y = 1;
                 //controls.autoRotate = true;
 
                 // events
@@ -108,19 +109,19 @@
 
                 // lights
 
-                var cube = new THREE.CubeGeometry( -.001, -.001, -.001 );
-                light1 = new THREE.PointLight( 0xff0040, 2, 25 );
-                light1.add( new THREE.Mesh( cube, new THREE.MeshBasicMaterial( { color: 0xff0040 } ) ) );
-                scene.add( light1 );
-                light2 = new THREE.PointLight( 0x0040ff, 2, 25 );
-                light2.add( new THREE.Mesh( cube, new THREE.MeshBasicMaterial( { color: 0x0040ff } ) ) );
-                scene.add( light2 );
-                light3 = new THREE.PointLight( 0x80ff80, 2, 25 );
-                light3.add( new THREE.Mesh( cube, new THREE.MeshBasicMaterial( { color: 0x80ff80 } ) ) );
-                scene.add( light3 );
-                light4 = new THREE.PointLight( 0xffaa00, 2, 25 );
-                light4.add( new THREE.Mesh( cube, new THREE.MeshBasicMaterial( { color: 0xffaa00 } ) ) );
-                scene.add( light4 );
+                var cube = new THREE.CubeGeometry(-.001, -.001, -.001);
+                light1 = new THREE.PointLight(0xff0040, 2, 25);
+                light1.add(new THREE.Mesh(cube, new THREE.MeshBasicMaterial({color: 0xff0040})));
+                scene.add(light1);
+                light2 = new THREE.PointLight(0x0040ff, 2, 25);
+                light2.add(new THREE.Mesh(cube, new THREE.MeshBasicMaterial({color: 0x0040ff})));
+                scene.add(light2);
+                light3 = new THREE.PointLight(0x80ff80, 2, 25);
+                light3.add(new THREE.Mesh(cube, new THREE.MeshBasicMaterial({color: 0x80ff80})));
+                scene.add(light3);
+                light4 = new THREE.PointLight(0xffaa00, 2, 25);
+                light4.add(new THREE.Mesh(cube, new THREE.MeshBasicMaterial({color: 0xffaa00})));
+                scene.add(light4);
 
                 light = new THREE.DirectionalLight(0xFFFFFF);
                 light.position.set(.1, .5, .2);
@@ -212,16 +213,16 @@
                 var time = Date.now() * 0.0001;
 
 
-                light.position.x = Math.sin(time*2) * 0;
-                light.position.z = Math.cos(time*2) * 0;
-                light1.position.x = Math.sin(time*2) * -2.5;
-                light1.position.z = Math.cos(time*2) * -2.5;
-                light2.position.x = Math.sin(time*2) * 2.5;
-                light2.position.z = Math.cos(time*2) * 2.5;
-                light3.position.x = Math.sin(time*2) * 5;
-                light3.position.z = Math.cos(time*2) * 5;
-                light4.position.x = Math.sin(time*2) * -5;
-                light4.position.z = Math.cos(time*2) * -5;
+                light.position.x = Math.sin(time * 2) * 0;
+                light.position.z = Math.cos(time * 2) * 0;
+                light1.position.x = Math.sin(time * 2) * -2.5;
+                light1.position.z = Math.cos(time * 2) * -2.5;
+                light2.position.x = Math.sin(time * 2) * 2.5;
+                light2.position.z = Math.cos(time * 2) * 2.5;
+                light3.position.x = Math.sin(time * 2) * 5;
+                light3.position.z = Math.cos(time * 2) * 5;
+                light4.position.x = Math.sin(time * 2) * -5;
+                light4.position.z = Math.cos(time * 2) * -5;
 
                 /*audio.frequencyData = audio.update();
                  
