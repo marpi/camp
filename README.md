@@ -1,17 +1,17 @@
 ## CAMP Workshop
 
-[![Building Generative VR Worlds on the Web](/index.jpg "Building Generative VR Worlds on the Web")](http://classes.marpi.pl/camp/)
-[![Building Generative VR Worlds on the Web](/audio_reactive.jpg "Building Generative VR Worlds on the Web")](http://classes.marpi.pl/camp/audio_reactive.html)
-[![Chris](/chris.jpg "Chris")](http://classes.marpi.pl/camp/public/chris)
-[![Building Generative VR Worlds on the Web](/class.jpg "Building Generative VR Worlds on the Web")](http://classes.marpi.pl/camp/class.html)
-[![Kyle](/kyle.jpg "Kyle")](http://classes.marpi.pl/camp/public/kyle)
-[![Lance](/lance.jpg "Lance")](http://classes.marpi.pl/camp/public/lance)
-[![Matthew](/matthew_w_diamonds.jpg "Matthew")](http://classes.marpi.pl/camp/public/matthew_w/diamonds.html)
-[![Building Generative VR Worlds on the Web](/monkey_music.jpg "Building Generative VR Worlds on the Web")](http://classes.marpi.pl/camp/monkey_music.html)
-[![Building Generative VR Worlds on the Web](/pretzel.jpg "Building Generative VR Worlds on the Web")](http://classes.marpi.pl/camp/pretzel.html)
-[![Building Generative VR Worlds on the Web](/pyramid.jpg "Building Generative VR Worlds on the Web")](http://classes.marpi.pl/camp/pyramid.html)
-[![Timothy](/timothy.jpg "Timothy")](http://classes.marpi.pl/camp/public/timothy)
-[![Lance](/vian.jpg "Vian")](http://classes.marpi.pl/camp/public/vian)
+[![Building Generative VR Worlds on the Web](/thumbs/index.jpg "Building Generative VR Worlds on the Web")](http://classes.marpi.pl/camp/)
+[![Building Generative VR Worlds on the Web](/thumbs/audio_reactive.jpg "Building Generative VR Worlds on the Web")](http://classes.marpi.pl/camp/audio_reactive.html)
+[![Chris](/thumbs/chris.jpg "Chris")](http://classes.marpi.pl/camp/public/chris)
+[![Building Generative VR Worlds on the Web](/thumbs/class.jpg "Building Generative VR Worlds on the Web")](http://classes.marpi.pl/camp/class.html)
+[![Kyle](/thumbs/kyle.jpg "Kyle")](http://classes.marpi.pl/camp/public/kyle)
+[![Lance](/thumbs/lance.jpg "Lance")](http://classes.marpi.pl/camp/public/lance)
+[![Matthew](/thumbs/matthew_w_diamonds.jpg "Matthew")](http://classes.marpi.pl/camp/public/matthew_w/diamonds.html)
+[![Building Generative VR Worlds on the Web](/thumbs/monkey_music.jpg "Building Generative VR Worlds on the Web")](http://classes.marpi.pl/camp/monkey_music.html)
+[![Building Generative VR Worlds on the Web](/thumbs/pretzel.jpg "Building Generative VR Worlds on the Web")](http://classes.marpi.pl/camp/pretzel.html)
+[![Building Generative VR Worlds on the Web](/thumbs/pyramid.jpg "Building Generative VR Worlds on the Web")](http://classes.marpi.pl/camp/pyramid.html)
+[![Timothy](/thumbs/timothy.jpg "Timothy")](http://classes.marpi.pl/camp/public/timothy)
+[![Lance](/thumbs/vian.jpg "Vian")](http://classes.marpi.pl/camp/public/vian)
 
 How to run
 -------
