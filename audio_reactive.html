@@ -75,6 +75,12 @@
                 // controls
 
                 controls = new THREE.OrbitControls(camera);
+                controls.minDistance = 2.5;
+                controls.maxDistance = 6;
+                //controls.maxPolarAngle = Math.PI / 2;
+                controls.autoRotate = true;
+                controls.enablePan = false;
+                controls.enableZoom = false;
                 //controls.autoRotate = true;
 
                 // events

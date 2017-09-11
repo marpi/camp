@@ -81,6 +81,11 @@
                 // controls
 
                 controls = new THREE.OrbitControls(camera);
+                controls.minDistance = 2.5;
+                controls.maxDistance = 6;
+                //controls.maxPolarAngle = Math.PI / 2;
+                controls.autoRotate = true;
+                controls.enablePan = false;
                 //controls.autoRotate = true;
 
                 // events
@@ -217,14 +222,6 @@
                     globalContainer.add(mesh)
                     slides.push(mesh);
                 }
-
-                var loader = new THREE.OBJLoader();
-                loader.setPath('assets/models/');
-                loader.load('monkey.obj', function (object) {
-                    scene.add(object)
-                    object.children[0].material=material;
-                    object.position.y=1;
-                });
 
                 animate()
             }

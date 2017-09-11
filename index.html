@@ -88,7 +88,7 @@
                 controls.minDistance = 2.5;
                 controls.maxDistance = 6;
                 controls.maxPolarAngle = Math.PI / 2;
-                //controls.autoRotate = true;
+                controls.autoRotate = true;
 
                 // events
 
@@ -246,6 +246,8 @@
                     monkeyHead = object;
                     monkeyHeadTween = new THREE.Object3D();
                     object.children[0].material = material;
+                    object.children[0].castShadow=true;
+                    object.children[0].receiveShadow=true;
                     object.position.y = 1;
 
                     animate()

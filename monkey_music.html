@@ -82,7 +82,7 @@
                 // camera
 
                 camera = new THREE.PerspectiveCamera(90, window.innerWidth / window.innerHeight, 0.1, 10000);
-                camera.position.set(0, 0, 3);
+                camera.position.set(0, .5, 2.5);
 
                 // controls
 
@@ -155,7 +155,7 @@
                     var mesh = new THREE.Mesh(geo, material);
                     while (mesh.position.distanceTo(scene.position) > 3 || mesh.position.distanceTo(scene.position) < 2 || mesh.position.x == 0 || mesh.position.y < -1) {
                         mesh.position.x = -3 + Math.random() * 6;
-                        mesh.position.y = -3;
+                        mesh.position.y = -3 + Math.random() * 6;
                         mesh.position.z = -3 + Math.random() * 6;
                     }
                     var s = Math.random() * 2
@@ -199,7 +199,7 @@
                     var mesh = new THREE.Mesh(geo, blackMaterial);
                     while (mesh.position.distanceTo(scene.position) < 5) {
                         mesh.position.x = -10 + Math.random() * 20;
-                        mesh.position.y = -10;
+                        mesh.position.y = -10 + Math.random() * 20;
                         mesh.position.z = -10 + Math.random() * 20;
                     }
                     var s = 5 + Math.random() * 10;
@@ -250,6 +250,8 @@
                     monkeyHead = object;
                     monkeyHeadTween = new THREE.Object3D();
                     object.children[0].material = material;
+                    object.children[0].castShadow=true;
+                    object.children[0].receiveShadow=true;
                     object.position.y = 1;
 
                     animate()
@@ -316,17 +318,17 @@
                 audio.update();
                 var f = audio.frequencies[10]
                 var spd = 0
-                //if (monkeyHead)
-                //    TweenLite.to(monkeyHead.scale, spd, {z: audio.frequencies[10] / 100, y: audio.frequencies[10] / 100, x: audio.frequencies[10] / 100})
-                //TweenLite.to(container.scale, spd, {z: 1+audio.frequencies[11] / 300, y: 1+audio.frequencies[11] / 300, x: 1+audio.frequencies[11] / 300})
-                //TweenLite.to(container1.scale, spd, {z: 1+audio.frequencies[12] / 200, y: 1+audio.frequencies[12] / 200, x: 1+audio.frequencies[12] / 200})
+                if (monkeyHead)
+                    TweenLite.to(monkeyHead.scale, spd, {z: .4+audio.frequencies[10] / 200, y: .4+audio.frequencies[10] / 200, x: .4+audio.frequencies[10] / 200})
+                TweenLite.to(container.scale, spd, {z: 1+audio.frequencies[11] / 300, y: 1+audio.frequencies[11] / 300, x: 1+audio.frequencies[11] / 300})
+                TweenLite.to(container1.scale, spd, {z: 1+audio.frequencies[12] / 200, y: 1+audio.frequencies[12] / 200, x: 1+audio.frequencies[12] / 200})
 
                 for (var i = 0; i < slides.length; i++) {
                     var mesh = slides[i]
                     TweenLite.to(mesh.scale, 0, {
                         //delay: spd * i / slides.length,
-                        x: 1 + audio.frequencies[i] / 200,
-                        z: 1 + audio.frequencies[i] / 200,
+                        x: .5 + audio.frequencies[i] / 200,
+                        z: .5 + audio.frequencies[i] / 200,
                         //ease: Back.easeOut
                     });
                 }
@@ -334,7 +336,7 @@
                     var mesh = groundSlides[i]
                     TweenLite.to(mesh.position, 0, {
                         //delay: 0,
-                        y: audio.frequencies[i] / 200 - 1,
+                        y: audio.frequencies[i] / 200 - 1.5,
                         //ease: Back.easeOut
                     });
                 }
@@ -363,9 +365,9 @@
                 if (monkeyHeadTween) {
                     if (Math.random()<.01 || previousCameraPosition.distanceTo(camera.position) > .1) {
                         monkeyHeadTween.lookAt(camera.position)
-                        TweenLite.to(monkeyHead.rotation, .2, {x: monkeyHeadTween.rotation.x, y: monkeyHeadTween.rotation.y, z: monkeyHeadTween.rotation.z})
+                        TweenLite.to(monkeyHead.rotation, Math.random(), {x: monkeyHeadTween.rotation.x, y: monkeyHeadTween.rotation.y, z: monkeyHeadTween.rotation.z})
                     }else if(Math.random()<.01){
-                        TweenLite.to(monkeyHead.rotation, .2, {x: Math.random()*1-.5, y: Math.random()*4-2, z: Math.random()*1-.5})
+                        TweenLite.to(monkeyHead.rotation, Math.random(), {x: Math.random()*1-.5, y: Math.random()*4-2, z: Math.random()*1-.5})
                     }
                 }
 

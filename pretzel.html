@@ -68,6 +68,12 @@
                 // controls
 
                 controls = new THREE.OrbitControls(camera);
+                controls.minDistance = 2.5;
+                controls.maxDistance = 6;
+                //controls.maxPolarAngle = Math.PI / 2;
+                controls.autoRotate = true;
+                controls.enablePan = false;
+                controls.enableZoom = false;
                 //controls.autoRotate = true;
 
                 // events
@@ -104,12 +110,12 @@
 
                 var material = new THREE.MeshStandardMaterial({
                     //color:0xFF0000,
-                    metalness:1,
-                    roughness:0.6,
-                    envMap:cubeMap,
+                    metalness: 1,
+                    roughness: 0.6,
+                    envMap: cubeMap,
                     shading: THREE.FlatShading
                 });//shading: THREE.FlatShading
-                var geo = new THREE.TorusKnotGeometry(2, .5,64,7,2,10);
+                var geo = new THREE.TorusKnotGeometry(1.5, .5, 64, 7, 2, 10);
                 for (var i = 0; i < 1; i++) {
                     var mesh = new THREE.Mesh(geo, material);
                     scene.add(mesh);
