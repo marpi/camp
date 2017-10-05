@@ -7,7 +7,7 @@
         <meta property="og:type" content="website"/>
         <meta property="og:image" content=""/>
         <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-
+        <script src="https://lab.gskinner.com/content/assets/template.min.js"></script>
         <style>
             body {
                 margin: 0px;
@@ -18,23 +18,23 @@
     </head>
     <body>
 
-        <script src="js/third-party/threejs/three.js"></script>
-        <script src="js/third-party/threejs/vr/ViveController.js"></script>
-        <script src="js/third-party/threejs/vr/WebVR.js"></script>
+        <script src="./js/third-party/threejs/three.js"></script>
+        <script src="./js/third-party/threejs/vr/ViveController.js"></script>
+        <script src="./js/third-party/threejs/vr/WebVR.js"></script>
 
-        <script src="js/third-party/threejs/loaders/OBJLoader.js"></script>
-        <script src="js/third-party/threejs/effects/VREffect.js"></script>
-        <script src="js/third-party/threejs/effects/StereoEffect.js"></script>
+        <script src="./js/third-party/threejs/loaders/OBJLoader.js"></script>
+        <script src="./js/third-party/threejs/effects/VREffect.js"></script>
+        <script src="./js/third-party/threejs/effects/StereoEffect.js"></script>
 
-        <script src="js/third-party/threejs/controls/VRControls.js"></script>
-        <script src="js/third-party/threejs/controls/DeviceOrientationControls.js"></script>
-        <script src="js/third-party/threejs/controls/OrbitControls.js"></script>
+        <script src="./js/third-party/threejs/controls/VRControls.js"></script>
+        <script src="./js/third-party/threejs/controls/DeviceOrientationControls.js"></script>
+        <script src="./js/third-party/threejs/controls/OrbitControls.js"></script>
 
-        <script src="js/third-party/TweenMax.min.js"></script>
-        <script src="js/third-party/perlin.js"></script>
+        <script src="./js/third-party/TweenMax.min.js"></script>
+        <script src="./js/third-party/perlin.js"></script>
 
-        <script src="js/utils/helpers.js"></script>
-        <script src="js/utils/AudioReactive.js"></script>
+        <script src="./js/utils/helpers.js"></script>
+        <script src="./js/utils/AudioReactive.js"></script>
 
         <script>
 
@@ -60,7 +60,7 @@
                 // audio
 
                 audio = new AudioReactive({});
-                audio.playMedia('assets/sound/ritual');
+                audio.playMedia('./assets/sound/ritual');
 
                 // renderer
 
@@ -87,6 +87,7 @@
                 // events
 
                 addEvents();
+                LabTemplate.loadComplete();
 
             }
 
